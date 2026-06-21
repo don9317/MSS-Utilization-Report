@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MSS Utilization Dashboard v1.6</title>
+<title>MSS Utilization Dashboard v1.10</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#14213d;--muted:#667085;--line:#d9e1ec;--accent:#174ea6;--good:#e8f5e9;--warn:#fff8e1;--bad:#ffebee}
 *{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
@@ -10,16 +10,18 @@ header{background:linear-gradient(120deg,#102a43,#174ea6);color:white;padding:22
 .kpi .label{font-size:13px;color:var(--muted)}.kpi .value{font-size:26px;font-weight:700;margin-top:8px}.kpi .small{font-size:12px;color:var(--muted);margin-top:3px}
 .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.field{display:flex;flex-direction:column;gap:5px;min-width:150px}label{font-size:12px;color:var(--muted);font-weight:700}select,input,button{font:inherit;border:1px solid var(--line);border-radius:9px;padding:9px;background:white}button{background:#174ea6;color:white;border:0;cursor:pointer;font-weight:700}.btn2{background:#eef4ff;color:#174ea6;border:1px solid #bfd3ff}.btn3{background:#fff;color:#174ea6;border:1px solid #bfd3ff}
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left}th{color:#344054;background:#f8fafc;position:sticky;top:0}.scroll{max-height:330px;overflow:auto}
-.bar{height:10px;background:#edf2f7;border-radius:999px;overflow:hidden}.bar>i{display:block;height:100%;background:#174ea6}.heat td{text-align:center}.heat .cell{border-radius:7px;padding:7px;font-weight:700}.h0{background:#f2f4f7}.h1{background:#ffcdd2}.h2{background:#ffecb3}.h3{background:#fff8e1}.h4{background:#d9f0df}.h5{background:#a5d6a7}.chartTable td{vertical-align:middle}.miniBar{height:16px;background:#edf2f7;border-radius:999px;overflow:hidden;min-width:85px}.miniBar>i{display:block;height:100%;background:#174ea6}.blockLabel{font-weight:700;color:#344054}
+.bar{height:10px;background:#edf2f7;border-radius:999px;overflow:hidden}.bar>i{display:block;height:100%;background:#174ea6}.heat td{text-align:center}.heat .cell{border-radius:7px;padding:7px;font-weight:700}.h0{background:#f2f4f7}.h1{background:#ffcdd2}.h2{background:#fff8e1}.h3{background:#c8e6c9}.h4{background:#2e7d32;color:white}.h5{background:#2e7d32;color:white}.chartTable td{vertical-align:middle}.miniBar{height:16px;background:#edf2f7;border-radius:999px;overflow:hidden;min-width:85px}.miniBar>i{display:block;height:100%;background:#174ea6}.blockLabel{font-weight:700;color:#344054}.setupTbl input,.setupTbl select{width:100%;padding:7px}.setupActions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.danger{background:#b42318!important;color:white!important}.smallBtn{padding:6px 8px;font-size:12px}
 .multi{position:relative;min-width:240px}.multiBtn{width:100%;background:white;color:#14213d;border:1px solid var(--line);text-align:left;font-weight:400}.multiMenu{display:none;position:absolute;z-index:20;background:white;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,.18);max-height:300px;overflow:auto;width:330px;padding:8px}.multi.open .multiMenu{display:block}.opt{display:flex;gap:8px;align-items:center;padding:6px;border-radius:6px}.opt:hover{background:#f2f6ff}.pill{display:inline-block;background:#eef4ff;color:#174ea6;border:1px solid #bfd3ff;padding:4px 8px;border-radius:999px;margin:3px;font-size:12px}.note{font-size:12px;color:var(--muted);line-height:1.45}.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;align-items:center;justify-content:center}.modal.show{display:flex}.modalBox{background:white;border-radius:14px;padding:18px;max-width:920px;width:94%;max-height:90vh;overflow:auto}textarea{width:100%;height:160px;font-family:monospace;font-size:12px}.err{color:#b42318;background:#fffbfa;border:1px solid #fecdca;border-radius:10px;padding:10px;display:none}.ok{color:#027a48}.footer{color:var(--muted);font-size:12px;margin-top:18px}
 @media(max-width:900px){.top,.two,.three{grid-template-columns:1fr}.controls{display:block}.field{margin-bottom:10px}.multiMenu{width:95vw}}
 </style></head><body>
-<header><h1>MSS Utilization Dashboard v1.6</h1><div class="sub">Facility utilization, revenue visibility, internal booking value, and monthly utilization trends.</div></header>
+<header><h1>MSS Utilization Dashboard v1.10</h1><div class="sub">Facility utilization, revenue visibility, internal booking value, monthly trends, and a no-code facility setup wizard with saved profiles.</div></header>
 <div class="wrap">
  <div class="card controls">
   <div class="field"><label>Upload MSS Reservations CSV</label><input type="file" id="mssFile" accept=".csv"><span class="note" id="mssFileStatus">No MSS file loaded</span></div>
   <div class="field"><label>Upload Internal Bookings CSV</label><input type="file" id="internalFile" accept=".csv"><span class="note" id="internalFileStatus">No internal file loaded</span></div>
+  <div class="field"><label>Load Facility Setup File</label><input type="file" id="setupFile" accept=".mss,.json"><span class="note" id="setupFileStatus">Default TM setup loaded</span></div>
   <button id="mergeFiles" class="btn2" type="button">Merge Files</button>
+  <button id="exportSetup" class="btn3" type="button">Export Setup</button><button id="saveBrowserSetup" class="btn3" type="button">Save Setup to Browser</button><button id="clearBrowserSetup" class="btn3" type="button">Clear Browser Setup</button>
   <div class="field"><label>Start Date</label><input type="date" id="startDate"></div><div class="field"><label>End Date</label><input type="date" id="endDate"></div>
   <div class="field"><label>Sport</label><select id="sport"><option value="__all__">All Sports</option></select></div>
   <div class="field multi" id="spaceMulti"><label>Spaces</label><button class="multiBtn" id="spaceBtn" type="button">All Spaces</button><div class="multiMenu" id="spaceMenu"></div></div>
@@ -31,7 +33,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
   <div class="card kpi"><div class="label">Internal File Rows</div><div class="value" id="vInternalRows">0</div><div class="small">Records loaded from internal file</div></div>
   <div class="card kpi"><div class="label">Internal Tagged Rows</div><div class="value" id="vInternalTagged">0</div><div class="small">Customer = Internal Booking</div></div>
   <div class="card kpi"><div class="label">Combined Rows</div><div class="value" id="vCombinedRows">0</div><div class="small">Total rows available for analysis</div></div>
-  <div class="card kpi"><div class="label">Data Status</div><div class="value" id="vDataStatus">Ready</div><div class="small">Upload files, then click Apply</div></div>
+  <div class="card kpi"><div class="label">Active Facility / Setup</div><div class="value" id="vFacility">TM</div><div class="small" id="vDataStatus">Default setup active</div></div>
  </div>
  <div class="grid top" style="margin-top:14px">
   <div class="card kpi"><div class="label">Overall Utilization</div><div class="value" id="kUtil">—</div><div class="small">Booked / adjusted capacity</div></div>
@@ -72,10 +74,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
  </div>
  <div class="card" style="margin-top:14px"><h3>Monthly Utilization Trend by Time Block</h3><p class="note">Utilization by month, day of week, and time block: before 12 PM, 12 PM–5 PM, and 5 PM–9 PM. Bars use the same utilization calculation as the main heatmap, including MSS + Internal Bookings and adjusted capacity.</p><div class="scroll" style="max-height:460px"><table class="chartTable" id="monthlyTrendTbl"></table></div></div>
  <div class="card" style="margin-top:14px"><h3>Reservation Detail</h3><div class="scroll"><table id="detailTbl"></table></div></div>
- <div class="footer">v1.6 rules: dual CSV upload; local date parsing; multi-select space dropdown; editable daily hours; parent/child capacity rules; Customer = Internal Booking is reported separately from MSS customer revenue. Time utilization includes MSS + Internal Bookings. Heatmap colors: red = low utilization/value, green = high utilization/value.</div>
+ <div class="footer">v1.8 rules: dual CSV upload; facility setup wizard with import/export; local date parsing; multi-select space dropdown; editable daily hours; parent/child capacity rules; Customer = Internal Booking is reported separately from MSS customer revenue. Time utilization includes MSS + Internal Bookings. Heatmap colors: red = under 20%, yellow = 20–49%, light green = 50–74%, dark green = 75%+ for time utilization; value heatmaps use the same red-to-green convention based on relative value.</div>
 </div>
-<div class="modal" id="modal"><div class="modalBox"><h2>Facility Setup</h2><p class="note">Use this setup area for different MSS facilities. Auto-detect finds spaces from the CSV, but parent/child capacity rules should be configured here for accurate utilization.</p>
+<div class="modal" id="modal"><div class="modalBox"><h2>Facility Setup Wizard</h2><p class="note">Use this screen to set up each facility without editing JSON. Enter daily operating hours and parent/child space relationships, then save the setup file and send it to the facility. The dashboard still saves/loads a small JSON profile behind the scenes, but users do not need to edit it.</p>
+ <h3>Facility and Daily Operating Hours</h3>
  <div class="grid three">
+  <div><label>Facility Name</label><input id="facilityName" value="TM Fieldhouse"></div><div></div><div></div>
   <div><label>Sunday Open</label><input id="sunOpen" value="09:30"></div><div><label>Sunday Close</label><input id="sunClose" value="19:00"></div><div></div>
   <div><label>Monday Open</label><input id="monOpen" value="09:00"></div><div><label>Monday Close</label><input id="monClose" value="21:00"></div><div></div>
   <div><label>Tuesday Open</label><input id="tueOpen" value="09:00"></div><div><label>Tuesday Close</label><input id="tueClose" value="21:00"></div><div></div>
@@ -84,7 +88,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
   <div><label>Friday Open</label><input id="friOpen" value="09:00"></div><div><label>Friday Close</label><input id="friClose" value="21:00"></div><div></div>
   <div><label>Saturday Open</label><input id="satOpen" value="09:30"></div><div><label>Saturday Close</label><input id="satClose" value="21:00"></div><div></div>
  </div>
- <h3>Parent / Child Space Rules JSON</h3><p class="note"><b>singleUnit</b>: the whole family counts as one rentable unit. <b>childUnits</b>: parent is an alternate to multiple child spaces; parent booking blocks all child capacity.</p><textarea id="rules"></textarea>
+ <h3>Parent / Child Space Relationships</h3>
+ <p class="note"><b>Single rentable unit</b> is best for full court + partial court families where the entire family should count as one available unit. <b>Parent with child units</b> is best for Full Field vs tunnels/turf, where the parent blocks all children but individual children can be counted separately.</p>
+ <div class="setupActions"><button id="addRule" class="btn2" type="button">+ Add Relationship</button><button id="loadTmDefaults" class="btn3" type="button">Load TM Defaults</button><button id="exportSetupModal" class="btn3" type="button">Save Setup File</button></div>
+ <div class="scroll" style="max-height:300px"><table class="setupTbl" id="relationshipTbl"></table></div>
+ <p class="note">Child spaces should be comma-separated. Example: <b>Court 1a, Court 1b, Court 1c</b></p>
+ <details style="margin-top:10px"><summary class="note">Advanced: view/edit setup JSON</summary><textarea id="rules"></textarea></details>
  <div style="margin-top:12px"><button id="saveSetup">Apply Setup</button> <button id="closeSetup" class="btn3">Close</button> <span id="setupStatus" class="note"></span></div>
 </div></div>
 <script>
@@ -92,6 +101,7 @@ const EMBEDDED_CSV = ``;
 let rawRows=[], rows=[], selectedSpaces=new Set();
 let mssRawRows=[], internalRawRows=[], loadedFileNames={mss:"", internal:""};
 let CONFIG={
+ facilityName:'TM Fieldhouse',
  hours:{
   sunday:['09:30','19:00'],
   monday:['09:00','21:00'],
@@ -127,6 +137,137 @@ function isParent(area,f){return norm(cleanAreaName(area))===norm(f.parent)}
 function normalizeRows(data, sourceLabel='MSS'){return data.map((r,idx)=>{let d=parseLocalDate(r['Reservation Date']); let st=timeToMin(r['Start Time']), en=timeToMin(r['End Time']); if(en!==null&&st!==null&&en<st)en+=1440; let areas=splitAreas(r['Area Reserved']); let customer=r['Customer']||r['Customer Name']||''; let internal=isInternalCustomer(customer); let revenue=revenueAmount(r); return {idx,date:d,dateStr:r['Reservation Date'],dow:d?d.getDay():null,start:st,end:en,title:r['Title']||r['Reservation Title']||'',customer,internal,revenue,sport:r['Reserved For Sport']||'Unspecified',areas,status:r['Paid Status']||'',payment:r['Form Of Payment']||'',type:r['Reservation Type']||'',source:sourceLabel,raw:r} }).filter(r=>r.date&&r.start!==null&&r.end!==null&&r.areas.length&&r.end>r.start&&!String(r.raw['Canceled On']||'').trim())}
 function setStatus(id, text){let el=document.getElementById(id); if(el) el.textContent=text;}
 function readCsvFile(inputId, done){let f=document.getElementById(inputId).files[0]; if(!f){done([], ''); return;} let rd=new FileReader(); rd.onload=()=>done(parseCSV(rd.result), f.name); rd.readAsText(f);}
+
+
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderRelationshipTable(){
+  const tbl=document.getElementById('relationshipTbl');
+  if(!tbl)return;
+  const rows=(CONFIG.families||[]).map((f,i)=>`<tr data-i="${i}">
+    <td><input class="relName" value="${escapeHtml(f.name||'')}"></td>
+    <td><select class="relMode"><option value="singleUnit" ${f.mode==='singleUnit'?'selected':''}>Single rentable unit</option><option value="childUnits" ${f.mode!=='singleUnit'?'selected':''}>Parent with child units</option></select></td>
+    <td><input class="relParent" value="${escapeHtml(f.parent||'')}"></td>
+    <td><input class="relChildren" value="${escapeHtml((f.children||[]).join(', '))}"></td>
+    <td><button type="button" class="danger smallBtn" onclick="deleteRelationship(${i})">Delete</button></td>
+  </tr>`).join('');
+  tbl.innerHTML=`<thead><tr><th>Rule Name</th><th>Type</th><th>Parent Space</th><th>Child Spaces</th><th></th></tr></thead><tbody>${rows||'<tr><td colspan="5" class="note">No relationships yet. Click Add Relationship.</td></tr>'}</tbody>`;
+}
+function collectRelationshipsFromTable(){
+  const tbl=document.getElementById('relationshipTbl');
+  if(!tbl)return CONFIG.families||[];
+  return Array.from(tbl.querySelectorAll('tbody tr[data-i]')).map(tr=>({
+    name:tr.querySelector('.relName')?.value?.trim() || 'Space Family',
+    mode:tr.querySelector('.relMode')?.value || 'childUnits',
+    parent:tr.querySelector('.relParent')?.value?.trim() || '',
+    children:(tr.querySelector('.relChildren')?.value || '').split(',').map(x=>x.trim()).filter(Boolean)
+  })).filter(f=>f.parent || f.children.length);
+}
+function addRelationship(){
+  CONFIG.families=collectRelationshipsFromTable();
+  CONFIG.families.push({name:'New Space Family', mode:'singleUnit', parent:'', children:[]});
+  renderRelationshipTable();
+}
+function deleteRelationship(i){
+  CONFIG.families=collectRelationshipsFromTable();
+  CONFIG.families.splice(i,1);
+  renderRelationshipTable();
+}
+function loadTmDefaultRelationships(){
+  CONFIG.families=[
+    {name:'Court 1 Family', mode:'singleUnit', parent:'Court 1', children:['Court 1a','Court 1b','Court 1c','Court 1 A','Court 1 B','Court 1 C']},
+    {name:'Court 2 Family', mode:'singleUnit', parent:'Court 2', children:['Court 2a','Court 2b','Court 2c','Court 2 A','Court 2 B','Court 2 C']},
+    {name:'Court 3 Family', mode:'singleUnit', parent:'Court 3', children:['Court 3a','Court 3b','Court 3c','Court 3 A','Court 3 B','Court 3 C']},
+    {name:'Court 4 Family', mode:'singleUnit', parent:'Court 4', children:['Court 4a','Court 4b','Court 4c','Court 4 A','Court 4 B','Court 4 C']},
+    {name:'Baseball Full Field Family', mode:'childUnits', parent:'Full Field', children:['Tunnel 1','Tunnel 2','Tunnel 3','Tunnel 4','Tunnel 5','Tunnel 6','Tunnel 7','Practice Turf']}
+  ];
+  renderRelationshipTable();
+}
+
+function updateFacilityDisplay(sourceLabel){
+  const name=(CONFIG.facilityName||'Facility').trim();
+  const vf=document.getElementById('vFacility'); if(vf) vf.textContent=name.length>14?name.slice(0,14)+'…':name;
+  const status = sourceLabel || ('Active setup: '+name);
+  const ss=document.getElementById('setupFileStatus'); if(ss && !ss.dataset.loaded) ss.textContent=status;
+  const vd=document.getElementById('vDataStatus'); if(vd) vd.textContent=status;
+}
+function currentSetupPayload(){
+  return {version:'1.10', facilityName:CONFIG.facilityName || 'Facility', hours:CONFIG.hours, families:CONFIG.families};
+}
+function saveSetupToBrowser(){
+  try{
+    localStorage.setItem('mssUtilizationFacilitySetup', JSON.stringify(currentSetupPayload()));
+    const msg='Saved setup to this browser: '+(CONFIG.facilityName||'Facility');
+    const ss=document.getElementById('setupFileStatus'); if(ss) ss.textContent=msg;
+    const vd=document.getElementById('vDataStatus'); if(vd) vd.textContent=msg;
+  }catch(e){showErr('Browser setup save failed: '+e.message)}
+}
+function clearBrowserSetup(){
+  try{
+    localStorage.removeItem('mssUtilizationFacilitySetup');
+    const msg='Browser setup cleared. Default TM setup remains active until another setup is loaded.';
+    const ss=document.getElementById('setupFileStatus'); if(ss) ss.textContent=msg;
+    const vd=document.getElementById('vDataStatus'); if(vd) vd.textContent=msg;
+  }catch(e){showErr('Could not clear browser setup: '+e.message)}
+}
+function loadSetupFromBrowser(){
+  try{
+    const raw=localStorage.getItem('mssUtilizationFacilitySetup');
+    if(!raw) return false;
+    applySetupObject(JSON.parse(raw), 'browser storage', false);
+    const msg='Loaded saved browser setup: '+(CONFIG.facilityName||'Facility');
+    const ss=document.getElementById('setupFileStatus'); if(ss){ss.textContent=msg; ss.dataset.loaded='1';}
+    const vd=document.getElementById('vDataStatus'); if(vd) vd.textContent=msg;
+    return true;
+  }catch(e){showErr('Saved browser setup could not be loaded: '+e.message); return false}
+}
+function normalizeSetupObject(obj){
+  if(!obj || typeof obj!=='object') throw new Error('Setup file is not valid. It should be an MSS facility setup file.');
+  const out={};
+  out.facilityName=obj.facilityName || obj.name || obj.facility || CONFIG.facilityName || 'Facility';
+  out.hours=obj.hours || CONFIG.hours;
+  const fam=obj.families || obj.parentChildRules || obj.rules || CONFIG.families;
+  out.families=fam.map((f,i)=>({
+    name:f.name || f.groupName || (f.parent?f.parent+' Family':'Family '+(i+1)),
+    mode:f.mode || f.type || 'childUnits',
+    parent:f.parent || '',
+    children:Array.isArray(f.children)?f.children:(typeof f.children==='string'?f.children.split(',').map(x=>x.trim()).filter(Boolean):[])
+  })).filter(f=>f.parent || f.children.length);
+  return out;
+}
+function applySetupObject(obj, sourceName='setup file', runApply=true){
+  const setup=normalizeSetupObject(obj);
+  CONFIG.facilityName=setup.facilityName;
+  CONFIG.hours=setup.hours;
+  CONFIG.families=setup.families;
+  const label='Loaded '+sourceName+': '+CONFIG.facilityName+' ('+CONFIG.families.length+' parent/child rules, 7 days configured)';
+  updateFacilityDisplay(label);
+  const ss=document.getElementById('setupFileStatus'); if(ss){ss.textContent=label; ss.dataset.loaded='1';}
+  try{localStorage.setItem('mssUtilizationFacilitySetup', JSON.stringify(currentSetupPayload()))}catch(e){}
+  buildSpaceMenu();
+  if(runApply) apply();
+}
+function readSetupFile(){
+  const f=document.getElementById('setupFile')?.files?.[0];
+  if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{applySetupObject(JSON.parse(rd.result), f.name)}catch(e){showErr('Facility setup file error: '+e.message)}};
+  rd.readAsText(f);
+}
+function exportFacilitySetup(){
+  const payload={
+    version:'1.10',
+    facilityName:CONFIG.facilityName || 'Facility',
+    hours:CONFIG.hours,
+    families:CONFIG.families
+  };
+  const safe=(payload.facilityName||'facility').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'facility';
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=safe+'-facility-setup.mss';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
 function mergeUploadedFiles(){
   readCsvFile('mssFile',(mssRows,mssName)=>{
     readCsvFile('internalFile',(intRows,intName)=>{
@@ -174,22 +315,23 @@ function pct(b,c){return c?b/c*100:0} function num(x){return (Math.round((x||0)*
 function renderTable(id, obj, order){let keys=order||Object.keys(obj).sort(); let html='<tr><th>Name</th><th>Booked</th><th>Capacity</th><th>Utilization</th><th></th></tr>'; for(const k of keys){let v=obj[k]||{booked:0,cap:0}, p=pct(v.booked,v.cap); html+=`<tr><td>${esc(k)}</td><td>${num(v.booked)}</td><td>${v.cap?num(v.cap):'—'}</td><td>${v.cap?p.toFixed(1)+'%':'—'}</td><td><div class="bar"><i style="width:${Math.min(100,p)}%"></i></div></td></tr>`} document.getElementById(id).innerHTML=html;}
 
 function renderSportTable(bookedObj, financeObj){let keys=Object.keys(bookedObj).sort((a,b)=>(bookedObj[b]?.booked||0)-(bookedObj[a]?.booked||0)); let totalBooked=keys.reduce((a,k)=>a+(bookedObj[k]?.booked||0),0); let html='<tr><th>Sport</th><th>Booked Hrs</th><th>% of Booked</th><th>MSS Revenue</th><th>Internal Value</th><th>Total Value</th><th>Value / Hr</th></tr>'; for(const k of keys){let b=bookedObj[k]?.booked||0; let f=financeObj[k]||{customerRev:0,internalRev:0,customerHours:0,internalHours:0}; let total=f.customerRev+f.internalRev; html+=`<tr><td>${esc(k)}</td><td>${num(b)}</td><td>${totalBooked?pct(b,totalBooked).toFixed(1)+'%':'—'}</td><td>${money1(f.customerRev)}</td><td>${money1(f.internalRev)}</td><td>${money1(total)}</td><td>${b?money1(total/b):'—'}</td></tr>`} document.getElementById('sportTbl').innerHTML=html;}
-function renderMonthlyTrend(trend){const blocks=['Before 12 PM','12 PM–5 PM','5 PM–9 PM']; let months=Object.keys(trend).sort(); let html='<tr><th>Month</th><th>Time Block</th>'+DAYS.map(d=>`<th>${d}</th>`).join('')+'</tr>'; for(const m of months){for(const b of blocks){html+=`<tr><td>${esc(m)}</td><td class="blockLabel">${esc(b)}</td>`+DAYS.map(d=>{let v=trend[m]?.[b]?.[d]||{booked:0,cap:0}; let p=pct(v.booked,v.cap); let cls=p>=90?'h5':p>=75?'h4':p>=50?'h3':p>=25?'h2':p>0?'h1':'h0'; return `<td><div class="miniBar"><i style="width:${Math.min(100,p)}%"></i></div><div class="cell ${cls}" style="margin-top:4px">${v.cap?p.toFixed(0)+'%':'—'}</div></td>`}).join('')+'</tr>'}} document.getElementById('monthlyTrendTbl').innerHTML=html||'<tr><td>No trend data available.</td></tr>';}
+function renderMonthlyTrend(trend){const blocks=['Before 12 PM','12 PM–5 PM','5 PM–9 PM']; let months=Object.keys(trend).sort(); let html='<tr><th>Month</th><th>Time Block</th>'+DAYS.map(d=>`<th>${d}</th>`).join('')+'</tr>'; for(const m of months){for(const b of blocks){html+=`<tr><td>${esc(m)}</td><td class="blockLabel">${esc(b)}</td>`+DAYS.map(d=>{let v=trend[m]?.[b]?.[d]||{booked:0,cap:0}; let p=pct(v.booked,v.cap); let cls=p>=75?'h4':p>=50?'h3':p>=20?'h2':p>0?'h1':'h0'; return `<td><div class="miniBar"><i style="width:${Math.min(100,p)}%"></i></div><div class="cell ${cls}" style="margin-top:4px">${v.cap?p.toFixed(0)+'%':'—'}</div></td>`}).join('')+'</tr>'}} document.getElementById('monthlyTrendTbl').innerHTML=html||'<tr><td>No trend data available.</td></tr>';}
 
-function updateValidation(){let internalTagged=internalRawRows.filter(r=>isInternalCustomer(r['Customer']||r['Customer Name']||'')).length; document.getElementById('vMssRows').textContent=mssRawRows.length.toLocaleString(); document.getElementById('vInternalRows').textContent=internalRawRows.length.toLocaleString(); document.getElementById('vInternalTagged').textContent=internalTagged.toLocaleString(); document.getElementById('vCombinedRows').textContent=(mssRawRows.length+internalRawRows.length).toLocaleString(); document.getElementById('vDataStatus').textContent=rows.length?'Loaded':'Ready';}
+function updateValidation(){let internalTagged=internalRawRows.filter(r=>isInternalCustomer(r['Customer']||r['Customer Name']||'')).length; document.getElementById('vMssRows').textContent=mssRawRows.length.toLocaleString(); document.getElementById('vInternalRows').textContent=internalRawRows.length.toLocaleString(); document.getElementById('vInternalTagged').textContent=internalTagged.toLocaleString(); document.getElementById('vCombinedRows').textContent=(mssRawRows.length+internalRawRows.length).toLocaleString(); updateFacilityDisplay(); document.getElementById('vDataStatus').textContent=rows.length?'Loaded — '+rows.length.toLocaleString()+' records ready':'Ready — upload files, then click Apply';}
 function apply(){showErr(''); updateValidation(); if(!rows.length){showErr('No data loaded. Upload the MSS Reservations CSV and/or Internal Bookings CSV, then click Merge Files or Apply.'); return} let c=compute(); let totalVal=c.totalCustomerRev+c.totalInternalRev; document.getElementById('kUtil').textContent=pct(c.totalBook,c.totalCap).toFixed(1)+'%'; document.getElementById('kBooked').textContent=num(c.totalBook); document.getElementById('kCap').textContent=num(c.totalCap); document.getElementById('kLost').textContent=num(Math.max(0,c.totalCap-c.totalBook)); document.getElementById('kRes').textContent=c.frows.length.toLocaleString(); let resSmall=document.getElementById('kResSmall'); if(resSmall) resSmall.textContent=`MSS rows: ${mssRawRows.length.toLocaleString()} | Internal rows: ${internalRawRows.length.toLocaleString()}`; document.getElementById('kCustRev').textContent=money(c.totalCustomerRev); document.getElementById('kIntRev').textContent=money(c.totalInternalRev); document.getElementById('kTotalVal').textContent=money(totalVal); document.getElementById('kVis').textContent=totalVal?pct(c.totalCustomerRev,totalVal).toFixed(1)+'%':'—'; document.getElementById('kIntPct').textContent=totalVal?pct(c.totalInternalRev,totalVal).toFixed(1)+'%':'—'; renderTable('dayTbl',c.byDay,DAYS); renderTable('hourTbl',c.byHour,Object.keys(c.byHour)); renderSportTable(c.bySport,c.bySportFinance); renderTable('spaceTbl',c.bySpace); renderRevenueHour(c.byHourFinance); renderYieldHour(c.byHourFinance); renderActivity(c.byHourFinance); renderRevenueSpace(c.bySpaceFinance); renderHeat(c.heat); renderValueHeat(c.valueHeat,'valueHeat'); renderValueHeat(c.internalHeat,'internalHeat'); renderMonthlyTrend(c.monthlyTrend); renderDetails(c.frows); renderInsights(c);}
 function financeKeys(obj){return Object.keys(obj).sort((a,b)=>timeToMin(a)-timeToMin(b))}
 function renderRevenueHour(obj){let html='<tr><th>Hour</th><th>MSS Customer Revenue</th><th>Internal Value</th><th>Total Value</th><th>MSS Visibility</th></tr>'; for(const k of financeKeys(obj)){let v=obj[k], total=v.customerRev+v.internalRev; html+=`<tr><td>${esc(k)}</td><td>${money1(v.customerRev)}</td><td>${money1(v.internalRev)}</td><td>${money1(total)}</td><td>${total?pct(v.customerRev,total).toFixed(1)+'%':'—'}</td></tr>`} document.getElementById('revHourTbl').innerHTML=html;}
 function renderYieldHour(obj){let html='<tr><th>Hour</th><th>Total Value</th><th>Booked Hours</th><th>Value / Booked Hour</th></tr>'; for(const k of financeKeys(obj)){let v=obj[k], total=v.customerRev+v.internalRev, hrs=v.customerHours+v.internalHours; html+=`<tr><td>${esc(k)}</td><td>${money1(total)}</td><td>${num(hrs)}</td><td>${hrs?money1(total/hrs):'—'}</td></tr>`} document.getElementById('yieldHourTbl').innerHTML=html;}
 function renderActivity(obj){let html='<tr><th>Hour</th><th>Customer Hours</th><th>Internal Hours</th><th>Internal %</th></tr>'; for(const k of financeKeys(obj)){let v=obj[k], hrs=v.customerHours+v.internalHours; html+=`<tr><td>${esc(k)}</td><td>${num(v.customerHours)}</td><td>${num(v.internalHours)}</td><td>${hrs?pct(v.internalHours,hrs).toFixed(1)+'%':'—'}</td></tr>`} document.getElementById('activityTbl').innerHTML=html;}
 function renderRevenueSpace(obj){let keys=Object.keys(obj).sort((a,b)=>(obj[b].customerRev+obj[b].internalRev)-(obj[a].customerRev+obj[a].internalRev)); let html='<tr><th>Space</th><th>MSS Revenue</th><th>Internal Value</th><th>Total Value</th><th>Value / Hr</th></tr>'; let detail='<tr><th>Space</th><th>MSS Customer Revenue</th><th>Internal Value</th><th>Total Value</th><th>Booked Hours</th><th>Value / Hour</th><th>MSS Visibility</th></tr>'; for(const k of keys){let v=obj[k], total=v.customerRev+v.internalRev, hrs=v.customerHours+v.internalHours; html+=`<tr><td>${esc(k)}</td><td>${money1(v.customerRev)}</td><td>${money1(v.internalRev)}</td><td>${money1(total)}</td><td>${hrs?money1(total/hrs):'—'}</td></tr>`; detail+=`<tr><td>${esc(k)}</td><td>${money1(v.customerRev)}</td><td>${money1(v.internalRev)}</td><td>${money1(total)}</td><td>${num(hrs)}</td><td>${hrs?money1(total/hrs):'—'}</td><td>${total?pct(v.customerRev,total).toFixed(1)+'%':'—'}</td></tr>`} document.getElementById('revSpaceTbl').innerHTML=html; let det=document.getElementById('revSpaceDetailTbl'); if(det)det.innerHTML=detail;}
-function renderHeat(heat){let hours=Object.keys(Object.assign({},...Object.values(heat))).sort((a,b)=>timeToMin(a)-timeToMin(b)); let html='<tr><th>Day</th>'+hours.map(h=>`<th>${h.replace(':00','')}</th>`).join('')+'</tr>'; for(const d of DAYS){html+=`<tr><th>${d}</th>`+hours.map(h=>{let v=heat[d]?.[h]||{booked:0,cap:0}; let p=pct(v.booked,v.cap); let cls=p>=90?'h5':p>=75?'h4':p>=50?'h3':p>=25?'h2':p>0?'h1':'h0'; return `<td><div class="cell ${cls}">${v.cap?p.toFixed(0)+'%':'—'}</div></td>`}).join('')+'</tr>'} document.getElementById('heat').innerHTML=html;}
-function renderValueHeat(heat,id){let hours=Object.keys(Object.assign({},...Object.values(heat))).sort((a,b)=>timeToMin(a)-timeToMin(b)); let max=0; for(const d of Object.values(heat)){for(const v of Object.values(d)){max=Math.max(max,v.value||0)}} let html='<tr><th>Day</th>'+hours.map(h=>`<th>${h.replace(':00','')}</th>`).join('')+'</tr>'; for(const d of DAYS){html+=`<tr><th>${d}</th>`+hours.map(h=>{let val=heat[d]?.[h]?.value||0; let p=max?val/max*100:0; let cls=p>=90?'h5':p>=65?'h4':p>=40?'h3':p>=15?'h2':p>0?'h1':'h0'; return `<td><div class="cell ${cls}">${val?money1(val):'—'}</div></td>`}).join('')+'</tr>'} let el=document.getElementById(id); if(el)el.innerHTML=html;}
+function renderHeat(heat){let hours=Object.keys(Object.assign({},...Object.values(heat))).sort((a,b)=>timeToMin(a)-timeToMin(b)); let html='<tr><th>Day</th>'+hours.map(h=>`<th>${h.replace(':00','')}</th>`).join('')+'</tr>'; for(const d of DAYS){html+=`<tr><th>${d}</th>`+hours.map(h=>{let v=heat[d]?.[h]||{booked:0,cap:0}; let p=pct(v.booked,v.cap); let cls=p>=75?'h4':p>=50?'h3':p>=20?'h2':p>0?'h1':'h0'; return `<td><div class="cell ${cls}">${v.cap?p.toFixed(0)+'%':'—'}</div></td>`}).join('')+'</tr>'} document.getElementById('heat').innerHTML=html;}
+function renderValueHeat(heat,id){let hours=Object.keys(Object.assign({},...Object.values(heat))).sort((a,b)=>timeToMin(a)-timeToMin(b)); let max=0; for(const d of Object.values(heat)){for(const v of Object.values(d)){max=Math.max(max,v.value||0)}} let html='<tr><th>Day</th>'+hours.map(h=>`<th>${h.replace(':00','')}</th>`).join('')+'</tr>'; for(const d of DAYS){html+=`<tr><th>${d}</th>`+hours.map(h=>{let val=heat[d]?.[h]?.value||0; let p=max?val/max*100:0; let cls=p>=75?'h4':p>=50?'h3':p>=20?'h2':p>0?'h1':'h0'; return `<td><div class="cell ${cls}">${val?money1(val):'—'}</div></td>`}).join('')+'</tr>'} let el=document.getElementById(id); if(el)el.innerHTML=html;}
 function renderDetails(rs){let html='<tr><th>Date</th><th>Day</th><th>Time</th><th>Space</th><th>Sport</th><th>Type</th><th>Source</th><th>Value</th><th>Title</th><th>Status</th></tr>'; for(const r of rs.slice(0,500)){html+=`<tr><td>${esc(r.dateStr)}</td><td>${DAYS[r.dow]}</td><td>${minToLabel(r.start)}–${minToLabel(r.end)}</td><td>${esc(r.areas.join(' | '))}</td><td>${esc(r.sport)}</td><td>${r.internal?'Internal Booking':'MSS Customer'}</td><td>${esc(r.source||'')}</td><td>${money1(r.revenue)}</td><td>${esc(r.title)}</td><td>${esc(r.status)}</td></tr>`} document.getElementById('detailTbl').innerHTML=html;}
 function renderInsights(c){let util=pct(c.totalBook,c.totalCap); let totalVal=c.totalCustomerRev+c.totalInternalRev; let best=Object.entries(c.byDay).sort((a,b)=>pct(b[1].booked,b[1].cap)-pct(a[1].booked,a[1].cap))[0]; let weak=Object.entries(c.byDay).filter(x=>x[1].cap).sort((a,b)=>pct(a[1].booked,a[1].cap)-pct(b[1].booked,b[1].cap))[0]; let bestRev=Object.entries(c.byHourFinance).sort((a,b)=>(b[1].customerRev+b[1].internalRev)-(a[1].customerRev+a[1].internalRev))[0]; let intHeavy=Object.entries(c.byHourFinance).filter(x=>(x[1].customerHours+x[1].internalHours)>0).sort((a,b)=>pct(b[1].internalHours,b[1].customerHours+b[1].internalHours)-pct(a[1].internalHours,a[1].customerHours+a[1].internalHours))[0]; let topSpace=Object.entries(c.bySpaceFinance).sort((a,b)=>(b[1].customerRev+b[1].internalRev)-(a[1].customerRev+a[1].internalRev))[0]; let txt=[]; txt.push(`<p><b>Overall:</b> ${util.toFixed(1)}% utilization across the selected date range, sports, and spaces.</p>`); if(totalVal)txt.push(`<p><b>Revenue visibility:</b> ${pct(c.totalCustomerRev,totalVal).toFixed(1)}% of total economic value is MSS customer revenue; ${pct(c.totalInternalRev,totalVal).toFixed(1)}% is Internal Booking value.</p>`); if(bestRev)txt.push(`<p><b>Highest-value hour:</b> ${bestRev[0]} generated ${money1(bestRev[1].customerRev+bestRev[1].internalRev)} in total value.</p>`); if(intHeavy)txt.push(`<p><b>Most internal-heavy hour:</b> ${intHeavy[0]} had ${pct(intHeavy[1].internalHours,intHeavy[1].customerHours+intHeavy[1].internalHours).toFixed(1)}% internal hours.</p>`); if(topSpace)txt.push(`<p><b>Top value space:</b> ${esc(topSpace[0])} generated ${money1(topSpace[1].customerRev+topSpace[1].internalRev)} in total value.</p>`); if(best)txt.push(`<p><b>Strongest day:</b> ${best[0]} at ${pct(best[1].booked,best[1].cap).toFixed(1)}%.</p>`); if(weak)txt.push(`<p><b>Weakest day:</b> ${weak[0]} at ${pct(weak[1].booked,weak[1].cap).toFixed(1)}%.</p>`); txt.push(`<p><b>Capacity method:</b> denominator uses adjusted rentable capacity. Parent/child alternatives are not double-counted.</p>`); document.getElementById('insights').innerHTML=txt.join('');}
 document.getElementById('spaceBtn').onclick=()=>document.getElementById('spaceMulti').classList.toggle('open'); document.addEventListener('click',e=>{if(!document.getElementById('spaceMulti').contains(e.target))document.getElementById('spaceMulti').classList.remove('open')});
-document.getElementById('mssFile').onchange=mergeUploadedFiles; document.getElementById('internalFile').onchange=mergeUploadedFiles; document.getElementById('mergeFiles').onclick=mergeUploadedFiles; document.getElementById('apply').onclick=apply;
-document.getElementById('setup').onclick=()=>{document.getElementById('modal').classList.add('show'); const map={sun:'sunday',mon:'monday',tue:'tuesday',wed:'wednesday',thu:'thursday',fri:'friday',sat:'saturday'}; for(const [p,k] of Object.entries(map)){document.getElementById(p+'Open').value=(CONFIG.hours[k]||['',''])[0]; document.getElementById(p+'Close').value=(CONFIG.hours[k]||['',''])[1];} document.getElementById('rules').value=JSON.stringify(CONFIG.families,null,2)};
-document.getElementById('closeSetup').onclick=()=>document.getElementById('modal').classList.remove('show'); document.getElementById('saveSetup').onclick=()=>{try{CONFIG.hours={sunday:[sunOpen.value,sunClose.value],monday:[monOpen.value,monClose.value],tuesday:[tueOpen.value,tueClose.value],wednesday:[wedOpen.value,wedClose.value],thursday:[thuOpen.value,thuClose.value],friday:[friOpen.value,friClose.value],saturday:[satOpen.value,satClose.value]}; CONFIG.families=JSON.parse(document.getElementById('rules').value); document.getElementById('setupStatus').innerHTML='<span class="ok">Setup applied.</span>'; buildSpaceMenu(); apply(); setTimeout(()=>document.getElementById('modal').classList.remove('show'),500)}catch(e){document.getElementById('setupStatus').textContent='Invalid setup JSON: '+e.message}};
-updateValidation(); showErr('Upload the MSS Reservations CSV and/or Internal Bookings CSV, then click Merge Files or Apply.');
+document.getElementById('mssFile').onchange=mergeUploadedFiles; document.getElementById('internalFile').onchange=mergeUploadedFiles; document.getElementById('mergeFiles').onclick=mergeUploadedFiles; document.getElementById('setupFile').onchange=readSetupFile; document.getElementById('exportSetup').onclick=exportFacilitySetup; document.getElementById('saveBrowserSetup').onclick=saveSetupToBrowser; document.getElementById('clearBrowserSetup').onclick=clearBrowserSetup; document.getElementById('apply').onclick=apply;
+document.getElementById('setup').onclick=()=>{document.getElementById('modal').classList.add('show'); document.getElementById('facilityName').value=CONFIG.facilityName||'Facility'; const map={sun:'sunday',mon:'monday',tue:'tuesday',wed:'wednesday',thu:'thursday',fri:'friday',sat:'saturday'}; for(const [p,k] of Object.entries(map)){document.getElementById(p+'Open').value=(CONFIG.hours[k]||['',''])[0]; document.getElementById(p+'Close').value=(CONFIG.hours[k]||['',''])[1];} renderRelationshipTable(); document.getElementById('rules').value=JSON.stringify(CONFIG.families,null,2)};
+document.getElementById('addRule').onclick=addRelationship; document.getElementById('loadTmDefaults').onclick=loadTmDefaultRelationships; document.getElementById('exportSetupModal').onclick=()=>{try{CONFIG.facilityName=document.getElementById('facilityName').value||'Facility'; CONFIG.hours={sunday:[sunOpen.value,sunClose.value],monday:[monOpen.value,monClose.value],tuesday:[tueOpen.value,tueClose.value],wednesday:[wedOpen.value,wedClose.value],thursday:[thuOpen.value,thuClose.value],friday:[friOpen.value,friClose.value],saturday:[satOpen.value,satClose.value]}; CONFIG.families=collectRelationshipsFromTable(); exportFacilitySetup();}catch(e){document.getElementById('setupStatus').textContent='Could not save setup: '+e.message}};
+document.getElementById('closeSetup').onclick=()=>document.getElementById('modal').classList.remove('show'); document.getElementById('saveSetup').onclick=()=>{try{CONFIG.facilityName=document.getElementById('facilityName').value||'Facility'; CONFIG.hours={sunday:[sunOpen.value,sunClose.value],monday:[monOpen.value,monClose.value],tuesday:[tueOpen.value,tueClose.value],wednesday:[wedOpen.value,wedClose.value],thursday:[thuOpen.value,thuClose.value],friday:[friOpen.value,friClose.value],saturday:[satOpen.value,satClose.value]}; let details=document.querySelector('details'); if(details && details.open && document.getElementById('rules').value.trim()){try{CONFIG.families=JSON.parse(document.getElementById('rules').value)}catch(e){CONFIG.families=collectRelationshipsFromTable();}} else {CONFIG.families=collectRelationshipsFromTable();} updateFacilityDisplay('Setup applied: '+(CONFIG.facilityName||'Facility')+' ('+CONFIG.families.length+' parent/child rules)'); try{localStorage.setItem('mssUtilizationFacilitySetup', JSON.stringify(currentSetupPayload()))}catch(e){} document.getElementById('rules').value=JSON.stringify(CONFIG.families,null,2); document.getElementById('setupStatus').innerHTML='<span class="ok">Setup applied and saved to this browser.</span>'; buildSpaceMenu(); apply(); setTimeout(()=>document.getElementById('modal').classList.remove('show'),500)}catch(e){document.getElementById('setupStatus').textContent='Setup error: '+e.message}};
+if(!loadSetupFromBrowser()) updateFacilityDisplay('Default TM setup active. Load a facility setup file or complete Space Setup for another facility.'); updateValidation(); showErr('Upload the MSS Reservations CSV and/or Internal Bookings CSV, then click Merge Files or Apply. Optional: load a Facility Setup file for a non-TM layout.');
 </script></body></html>
