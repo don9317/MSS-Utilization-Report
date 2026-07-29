@@ -1,19 +1,18 @@
-# MSS Utilization Dashboard v1.11
+# MSS Utilization Dashboard v1.12
 
-GitHub Pages package. Upload `index.html` to the repository root.
+## Included files
+- `index.html` — GitHub Pages dashboard
+- `facility_setup_template.mss` — editable template for each facility
+- `README.md` — setup instructions
+- `RELEASE_NOTES.md` — version changes
 
-## Restored from v1.10
-- MSS Reservations CSV upload
-- Internal Bookings CSV upload
-- Facility setup file load/export
-- Browser-saved facility profiles
-- Merge Files, date, sport, and multi-space filters
-- Utilization, revenue, internal value, value heatmaps, and monthly trends
+## Facility setup workflow
+1. Copy `facility_setup_template.mss`.
+2. Rename it for the facility, such as `hive-setup.mss`.
+3. Open the copy in Notepad and change the facility name, operating hours, and parent/child space families.
+4. In the dashboard, use **Load Facility Setup File**.
+5. The easier alternative is to open **Space Setup**, configure the facility, and click **Export Setup**.
 
-## New utilization engine
-- Parent/child alternatives are consolidated into physical rentable assets.
-- Court 1 / Court 1 West / Court 1 East count as one physical court asset.
-- Courts 2-4 follow the same rule.
-- Legacy a/b/c court labels remain recognized.
-- Full Field blocks Tunnel 1-7 and Practice Turf; child rentals block Full Field.
-- Overlapping reservations on the same physical asset count only once in utilization.
+### Family modes
+- `singleUnit`: the parent and all children represent one physical rentable asset. Example: Court 1 / Court 1 West / Court 1 East.
+- `childUnits`: the parent blocks all children, but children may count as separate rentable units when the parent is not rented. Example: Full Field / tunnels / Practice Turf.
