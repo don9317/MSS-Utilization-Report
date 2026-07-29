@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MSS Utilization Dashboard v1.10</title>
+<title>MSS Utilization Dashboard v1.11</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#14213d;--muted:#667085;--line:#d9e1ec;--accent:#174ea6;--good:#e8f5e9;--warn:#fff8e1;--bad:#ffebee}
 *{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
@@ -14,7 +14,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .multi{position:relative;min-width:240px}.multiBtn{width:100%;background:white;color:#14213d;border:1px solid var(--line);text-align:left;font-weight:400}.multiMenu{display:none;position:absolute;z-index:20;background:white;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,.18);max-height:300px;overflow:auto;width:330px;padding:8px}.multi.open .multiMenu{display:block}.opt{display:flex;gap:8px;align-items:center;padding:6px;border-radius:6px}.opt:hover{background:#f2f6ff}.pill{display:inline-block;background:#eef4ff;color:#174ea6;border:1px solid #bfd3ff;padding:4px 8px;border-radius:999px;margin:3px;font-size:12px}.note{font-size:12px;color:var(--muted);line-height:1.45}.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:50;align-items:center;justify-content:center}.modal.show{display:flex}.modalBox{background:white;border-radius:14px;padding:18px;max-width:920px;width:94%;max-height:90vh;overflow:auto}textarea{width:100%;height:160px;font-family:monospace;font-size:12px}.err{color:#b42318;background:#fffbfa;border:1px solid #fecdca;border-radius:10px;padding:10px;display:none}.ok{color:#027a48}.footer{color:var(--muted);font-size:12px;margin-top:18px}
 @media(max-width:900px){.top,.two,.three{grid-template-columns:1fr}.controls{display:block}.field{margin-bottom:10px}.multiMenu{width:95vw}}
 </style></head><body>
-<header><h1>MSS Utilization Dashboard v1.10</h1><div class="sub">Facility utilization, revenue visibility, internal booking value, monthly trends, and a no-code facility setup wizard with saved profiles.</div></header>
+<header><h1>MSS Utilization Dashboard v1.11</h1><div class="sub">Facility utilization, revenue visibility, internal booking value, monthly trends, and a no-code facility setup wizard with saved profiles.</div></header>
 <div class="wrap">
  <div class="card controls">
   <div class="field"><label>Upload MSS Reservations CSV</label><input type="file" id="mssFile" accept=".csv"><span class="note" id="mssFileStatus">No MSS file loaded</span></div>
@@ -74,7 +74,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
  </div>
  <div class="card" style="margin-top:14px"><h3>Monthly Utilization Trend by Time Block</h3><p class="note">Utilization by month, day of week, and time block: before 12 PM, 12 PM–5 PM, and 5 PM–9 PM. Bars use the same utilization calculation as the main heatmap, including MSS + Internal Bookings and adjusted capacity.</p><div class="scroll" style="max-height:460px"><table class="chartTable" id="monthlyTrendTbl"></table></div></div>
  <div class="card" style="margin-top:14px"><h3>Reservation Detail</h3><div class="scroll"><table id="detailTbl"></table></div></div>
- <div class="footer">v1.8 rules: dual CSV upload; facility setup wizard with import/export; local date parsing; multi-select space dropdown; editable daily hours; parent/child capacity rules; Customer = Internal Booking is reported separately from MSS customer revenue. Time utilization includes MSS + Internal Bookings. Heatmap colors: red = under 20%, yellow = 20–49%, light green = 50–74%, dark green = 75%+ for time utilization; value heatmaps use the same red-to-green convention based on relative value.</div>
+ <div class="footer">v1.11 rules: dual CSV upload; facility setup wizard with import/export; local date parsing; multi-select space dropdown; editable daily hours; parent/child capacity rules; Customer = Internal Booking is reported separately from MSS customer revenue. Time utilization includes MSS + Internal Bookings. Heatmap colors: red = under 20%, yellow = 20–49%, light green = 50–74%, dark green = 75%+ for time utilization; value heatmaps use the same red-to-green convention based on relative value.</div>
 </div>
 <div class="modal" id="modal"><div class="modalBox"><h2>Facility Setup Wizard</h2><p class="note">Use this screen to set up each facility without editing JSON. Enter daily operating hours and parent/child space relationships, then save the setup file and send it to the facility. The dashboard still saves/loads a small JSON profile behind the scenes, but users do not need to edit it.</p>
  <h3>Facility and Daily Operating Hours</h3>
@@ -112,10 +112,10 @@ let CONFIG={
   saturday:['09:30','21:00']
  },
  families:[
-  {name:'Court 1 Family', mode:'singleUnit', parent:'Court 1', children:['Court 1a','Court 1b','Court 1c','Court 1 A','Court 1 B','Court 1 C']},
-  {name:'Court 2 Family', mode:'singleUnit', parent:'Court 2', children:['Court 2a','Court 2b','Court 2c','Court 2 A','Court 2 B','Court 2 C']},
-  {name:'Court 3 Family', mode:'singleUnit', parent:'Court 3', children:['Court 3a','Court 3b','Court 3c','Court 3 A','Court 3 B','Court 3 C']},
-  {name:'Court 4 Family', mode:'singleUnit', parent:'Court 4', children:['Court 4a','Court 4b','Court 4c','Court 4 A','Court 4 B','Court 4 C']},
+  {name:'Court 1 Asset', mode:'singleUnit', parent:'Court 1', children:['Court 1 West','Court 1 East','Court 1a','Court 1b','Court 1c','Court 1 A','Court 1 B','Court 1 C']},
+  {name:'Court 2 Asset', mode:'singleUnit', parent:'Court 2', children:['Court 2 West','Court 2 East','Court 2a','Court 2b','Court 2c','Court 2 A','Court 2 B','Court 2 C']},
+  {name:'Court 3 Asset', mode:'singleUnit', parent:'Court 3', children:['Court 3 West','Court 3 East','Court 3a','Court 3b','Court 3c','Court 3 A','Court 3 B','Court 3 C']},
+  {name:'Court 4 Asset', mode:'singleUnit', parent:'Court 4', children:['Court 4 West','Court 4 East','Court 4a','Court 4b','Court 4c','Court 4 A','Court 4 B','Court 4 C']},
   {name:'Baseball Full Field Family', mode:'childUnits', parent:'Full Field', children:['Tunnel 1','Tunnel 2','Tunnel 3','Tunnel 4','Tunnel 5','Tunnel 6','Tunnel 7','Practice Turf']}
  ]
 };
@@ -174,10 +174,10 @@ function deleteRelationship(i){
 }
 function loadTmDefaultRelationships(){
   CONFIG.families=[
-    {name:'Court 1 Family', mode:'singleUnit', parent:'Court 1', children:['Court 1a','Court 1b','Court 1c','Court 1 A','Court 1 B','Court 1 C']},
-    {name:'Court 2 Family', mode:'singleUnit', parent:'Court 2', children:['Court 2a','Court 2b','Court 2c','Court 2 A','Court 2 B','Court 2 C']},
-    {name:'Court 3 Family', mode:'singleUnit', parent:'Court 3', children:['Court 3a','Court 3b','Court 3c','Court 3 A','Court 3 B','Court 3 C']},
-    {name:'Court 4 Family', mode:'singleUnit', parent:'Court 4', children:['Court 4a','Court 4b','Court 4c','Court 4 A','Court 4 B','Court 4 C']},
+    {name:'Court 1 Asset', mode:'singleUnit', parent:'Court 1', children:['Court 1 West','Court 1 East','Court 1a','Court 1b','Court 1c','Court 1 A','Court 1 B','Court 1 C']},
+    {name:'Court 2 Asset', mode:'singleUnit', parent:'Court 2', children:['Court 2 West','Court 2 East','Court 2a','Court 2b','Court 2c','Court 2 A','Court 2 B','Court 2 C']},
+    {name:'Court 3 Asset', mode:'singleUnit', parent:'Court 3', children:['Court 3 West','Court 3 East','Court 3a','Court 3b','Court 3c','Court 3 A','Court 3 B','Court 3 C']},
+    {name:'Court 4 Asset', mode:'singleUnit', parent:'Court 4', children:['Court 4 West','Court 4 East','Court 4a','Court 4b','Court 4c','Court 4 A','Court 4 B','Court 4 C']},
     {name:'Baseball Full Field Family', mode:'childUnits', parent:'Full Field', children:['Tunnel 1','Tunnel 2','Tunnel 3','Tunnel 4','Tunnel 5','Tunnel 6','Tunnel 7','Practice Turf']}
   ];
   renderRelationshipTable();
@@ -292,19 +292,90 @@ function selectedSport(){return document.getElementById('sport').value}
 function inFilter(r){let sd=parseLocalDate(document.getElementById('startDate').value), ed=parseLocalDate(document.getElementById('endDate').value); if(sd&&r.date<sd)return false; if(ed&&r.date>ed)return false; let sp=selectedSport(); if(sp!=='__all__'&&r.sport!==sp)return false; return r.areas.some(a=>selectedSpaces.has(cleanAreaName(a)) || [...selectedSpaces].some(sa=>related(a,sa)));}
 function related(a,b){let fa=familyFor(a), fb=familyFor(b); return fa&&fb&&fa.name===fb.name}
 function dateList(){let sd=parseLocalDate(document.getElementById('startDate').value), ed=parseLocalDate(document.getElementById('endDate').value); let arr=[]; if(!sd||!ed)return arr; for(let d=new Date(sd); d<=ed; d.setDate(d.getDate()+1))arr.push(new Date(d)); return arr}
-function selectedUnits(){let spaces=[...selectedSpaces]; let used=new Set(), units=[]; for(const f of CONFIG.families){let members=[f.parent,...f.children]; let selectedMembers=spaces.filter(s=>members.some(m=>norm(m)===norm(s))); if(selectedMembers.length){members.forEach(m=>used.add(norm(m))); if(f.mode==='singleUnit'){units.push({kind:'family',mode:f.mode,family:f,weight:1,label:f.name})} else {let selectedChildren=f.children.filter(c=>selectedMembers.some(s=>norm(s)===norm(c))); let parentSelected=selectedMembers.some(s=>norm(s)===norm(f.parent)); let weight=selectedChildren.length || (parentSelected?1:0); units.push({kind:'family',mode:f.mode,family:f,weight,label:f.name,children:selectedChildren,parentSelected})} }} spaces.forEach(s=>{if(!used.has(norm(s)))units.push({kind:'space',space:s,weight:1,label:s})}); return units;}
+function selectedUnits(){
+ let spaces=[...selectedSpaces], used=new Set(), units=[];
+ for(const f of CONFIG.families){
+  const members=[f.parent,...f.children];
+  const selectedMembers=spaces.filter(s=>members.some(m=>norm(m)===norm(s)));
+  if(!selectedMembers.length)continue;
+  members.forEach(m=>used.add(norm(m)));
+  if(f.mode==='singleUnit'){
+   units.push({kind:'singleFamily',family:f,key:'family:'+norm(f.name),label:f.name,weight:1});
+  }else{
+   const selectedChildren=f.children.filter(c=>selectedMembers.some(s=>norm(s)===norm(c)));
+   const parentSelected=selectedMembers.some(s=>norm(s)===norm(f.parent));
+   if(selectedChildren.length){
+    for(const c of selectedChildren)units.push({kind:'childUnit',family:f,child:c,key:'child:'+norm(f.name)+':'+norm(c),label:c,weight:1});
+   }else if(parentSelected){
+    units.push({kind:'parentView',family:f,key:'parent:'+norm(f.name),label:f.parent,weight:1});
+   }
+  }
+ }
+ spaces.forEach(s=>{if(!used.has(norm(s)))units.push({kind:'space',space:s,key:'space:'+norm(s),label:s,weight:1})});
+ return units;
+}
 function capacityForSelection(){return selectedUnits().reduce((a,u)=>a+u.weight,0)}
-function bookedUnitsForReservation(r, units){let total=0; for(const u of units){ if(u.kind==='space'){ if(r.areas.some(a=>norm(a)===norm(u.space))) total+=1; continue; } const f=u.family; let parentBooked=r.areas.some(a=>isParent(a,f)); let bookedChildren=f.children.filter(c=>r.areas.some(a=>norm(a)===norm(c))); let anyFamily=parentBooked || bookedChildren.length; if(!anyFamily)continue; if(u.mode==='singleUnit') total+=1; else { if(u.children&&u.children.length){ if(parentBooked) total+=u.children.length; else total+=bookedChildren.filter(c=>u.children.some(sc=>norm(sc)===norm(c))).length; } else if(u.parentSelected){ total+=1; } } } return Math.min(total, capacityForSelection()||total);}
+function rowMatchesUnit(r,u){
+ if(u.kind==='space')return r.areas.some(a=>norm(a)===norm(u.space));
+ const f=u.family;
+ const parentBooked=r.areas.some(a=>isParent(a,f));
+ const childBooked=r.areas.some(a=>f.children.some(c=>norm(c)===norm(a)));
+ if(u.kind==='singleFamily'||u.kind==='parentView')return parentBooked||childBooked;
+ if(u.kind==='childUnit')return parentBooked||r.areas.some(a=>norm(a)===norm(u.child));
+ return false;
+}
+function unionMinutes(intervals,start,end){
+ const clipped=intervals.map(([a,b])=>[Math.max(a,start),Math.min(b,end)]).filter(x=>x[1]>x[0]).sort((a,b)=>a[0]-b[0]);
+ if(!clipped.length)return 0;
+ let total=0,[cs,ce]=clipped[0];
+ for(let i=1;i<clipped.length;i++){const [ss,ee]=clipped[i]; if(ss<=ce)ce=Math.max(ce,ee); else{total+=ce-cs;cs=ss;ce=ee}}
+ return total+ce-cs;
+}
+function bookedUnitsForReservation(r,units){return units.reduce((n,u)=>n+(rowMatchesUnit(r,u)?1:0),0)}
 function overlap(a1,a2,b1,b2){return Math.max(0,Math.min(a2,b2)-Math.max(a1,b1));}
+function occupiedForSlot(slotRows,units,slotStart,slotEnd){
+ let occupied=0;
+ for(const u of units){
+  const intervals=slotRows.filter(r=>rowMatchesUnit(r,u)).map(r=>[r.start,r.end]);
+  occupied+=unionMinutes(intervals,slotStart,slotEnd)/60;
+ }
+ return occupied;
+}
 function compute(){let frows=rows.filter(inFilter); let units=selectedUnits(), capUnits=capacityForSelection(); let dates=dateList(); let byDay={}, byHour={}, bySport={}, bySpace={}, heat={}, valueHeat={}, internalHeat={}, byHourFinance={}, bySpaceFinance={}, bySportFinance={}, monthlyTrend={}; let totalCap=0,totalBook=0,totalCustomerRev=0,totalInternalRev=0,totalCustomerHours=0,totalInternalHours=0;
- const slots=[]; for(const d of dates){let dow=d.getDay(), [op,cl]=operatingRange(dow); for(let h=Math.floor(op/60)*60; h<cl; h+=60){let mins=overlap(h,h+60,op,cl); if(mins>0)slots.push({d:new Date(d),dow,h,mins})}}
- // Per-space capacity is shown on the Utilization by Space table.
- // It is calculated as each selected space being available during open hours.
- // Overall utilization still uses adjusted rentable capacity and parent/child rules.
+ const slots=[]; for(const d of dates){let dow=d.getDay(), [op,cl]=operatingRange(dow); for(let h=Math.floor(op/60)*60; h<cl; h+=60){let slotEnd=Math.min(h+60,cl), mins=overlap(h,slotEnd,op,cl); if(mins>0)slots.push({d:new Date(d),dow,h,end:slotEnd,mins})}}
+ // Raw-space table remains useful for seeing which booking labels were used.
  for(const sl of slots){ for(const sp of selectedSpaces){ add(bySpace, sp, 0, sl.mins/60); } }
- for(const sl of slots){let cap=capUnits*sl.mins/60; totalCap+=cap; let slotRows=frows.filter(r=>fmtDate(r.date)===fmtDate(sl.d)&&overlap(r.start,r.end,sl.h,sl.h+sl.mins)>0); let occ=0; for(const r of slotRows){let dur=overlap(r.start,r.end,sl.h,sl.h+sl.mins)/60; let bookedUnits=bookedUnitsForReservation(r,units); occ += bookedUnits*dur; let rowDur=(r.end-r.start)/60 || 1; let revPart=r.revenue*(dur/rowDur); let custRev=r.internal?0:revPart, intRev=r.internal?revPart:0; let custH=r.internal?0:bookedUnits*dur, intH=r.internal?bookedUnits*dur:0; addFinance(byHourFinance,minToLabel(sl.h),custRev,intRev,custH,intH); valueHeat[DAYS[sl.dow]] ??={}; internalHeat[DAYS[sl.dow]] ??={}; addValue(valueHeat[DAYS[sl.dow]],minToLabel(sl.h),custRev+intRev); addValue(internalHeat[DAYS[sl.dow]],minToLabel(sl.h),intRev); totalCustomerRev+=custRev; totalInternalRev+=intRev; totalCustomerHours+=custH; totalInternalHours+=intH; } occ=Math.min(occ,cap); totalBook+=occ; add(byDay,DAYS[sl.dow],occ,cap); add(byHour,minToLabel(sl.h),occ,cap); heat[DAYS[sl.dow]] ??={}; add(heat[DAYS[sl.dow]],minToLabel(sl.h),occ,cap); let block=timeBlock(sl.h); if(block){addTrend(monthlyTrend,monthLabel(sl.d),block,DAYS[sl.dow],occ,cap);} }
- for(const r of frows){let dur=(r.end-r.start)/60, bu=bookedUnitsForReservation(r,units); add(bySport,r.sport,dur*bu,0); addFinance(bySportFinance,r.sport,r.internal?0:r.revenue,r.internal?r.revenue:0,r.internal?0:dur*bu,r.internal?dur*bu:0); let matched=r.areas.filter(a=>selectedSpaces.has(cleanAreaName(a)) || [...selectedSpaces].some(sa=>related(a,sa))); let share=matched.length? r.revenue/matched.length : 0; for(const a of matched){ add(bySpace,cleanAreaName(a),dur,0); addFinance(bySpaceFinance,cleanAreaName(a),r.internal?0:share,r.internal?share:0,r.internal?0:dur,r.internal?dur:0); }}
- return {frows,byDay,byHour,bySport,bySportFinance,bySpace,heat,valueHeat,internalHeat,monthlyTrend,totalCap,totalBook,capUnits,byHourFinance,bySpaceFinance,totalCustomerRev,totalInternalRev,totalCustomerHours,totalInternalHours};}
+ for(const sl of slots){
+  let cap=capUnits*sl.mins/60; totalCap+=cap;
+  let slotRows=frows.filter(r=>fmtDate(r.date)===fmtDate(sl.d)&&overlap(r.start,r.end,sl.h,sl.end)>0);
+  let occ=Math.min(occupiedForSlot(slotRows,units,sl.h,sl.end),cap);
+  for(const r of slotRows){
+   let dur=overlap(r.start,r.end,sl.h,sl.end)/60;
+   let bookedUnits=bookedUnitsForReservation(r,units);
+   let rowDur=(r.end-r.start)/60 || 1;
+   let revPart=r.revenue*(dur/rowDur);
+   let custRev=r.internal?0:revPart, intRev=r.internal?revPart:0;
+   let custH=r.internal?0:bookedUnits*dur, intH=r.internal?bookedUnits*dur:0;
+   addFinance(byHourFinance,minToLabel(sl.h),custRev,intRev,custH,intH);
+   valueHeat[DAYS[sl.dow]] ??={}; internalHeat[DAYS[sl.dow]] ??={};
+   addValue(valueHeat[DAYS[sl.dow]],minToLabel(sl.h),custRev+intRev);
+   addValue(internalHeat[DAYS[sl.dow]],minToLabel(sl.h),intRev);
+   totalCustomerRev+=custRev; totalInternalRev+=intRev; totalCustomerHours+=custH; totalInternalHours+=intH;
+  }
+  totalBook+=occ; add(byDay,DAYS[sl.dow],occ,cap); add(byHour,minToLabel(sl.h),occ,cap);
+  heat[DAYS[sl.dow]] ??={}; add(heat[DAYS[sl.dow]],minToLabel(sl.h),occ,cap);
+  let block=timeBlock(sl.h); if(block){addTrend(monthlyTrend,monthLabel(sl.d),block,DAYS[sl.dow],occ,cap);}
+ }
+ for(const r of frows){
+  let dur=(r.end-r.start)/60, bu=bookedUnitsForReservation(r,units);
+  add(bySport,r.sport,dur*bu,0);
+  addFinance(bySportFinance,r.sport,r.internal?0:r.revenue,r.internal?r.revenue:0,r.internal?0:dur*bu,r.internal?dur*bu:0);
+  let matched=r.areas.filter(a=>selectedSpaces.has(cleanAreaName(a)) || [...selectedSpaces].some(sa=>related(a,sa)));
+  let share=matched.length? r.revenue/matched.length : 0;
+  for(const a of matched){ add(bySpace,cleanAreaName(a),dur,0); addFinance(bySpaceFinance,cleanAreaName(a),r.internal?0:share,r.internal?share:0,r.internal?0:dur,r.internal?dur:0); }
+ }
+ return {frows,byDay,byHour,bySport,bySportFinance,bySpace,heat,valueHeat,internalHeat,monthlyTrend,totalCap,totalBook,capUnits,byHourFinance,bySpaceFinance,totalCustomerRev,totalInternalRev,totalCustomerHours,totalInternalHours};
+}
 function add(obj,k,b,c){obj[k]??={booked:0,cap:0}; obj[k].booked+=b; obj[k].cap+=c||0}
 function addValue(obj,k,v){obj[k]??={value:0}; obj[k].value+=v||0}
 function monthLabel(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}

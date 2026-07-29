@@ -1,21 +1,19 @@
-# MSS Utilization Dashboard v1.0
+# MSS Utilization Dashboard v1.11
 
-GitHub-ready single-page dashboard for MSS facility utilization.
+GitHub Pages package. Upload `index.html` to the repository root.
 
-## Features
-- Upload MSS reservation CSV or load embedded TM sample data
-- Utilization by day, hour, sport, and space
-- Multi-select space dropdown
-- Editable operating hours
-- Local date parsing to avoid UTC day-of-week shifts
-- Parent/child capacity rules for full courts and divided courts
-- Baseball Full Field / Tunnel / Practice Turf capacity rules
-- Facility setup JSON for future locations
+## Restored from v1.10
+- MSS Reservations CSV upload
+- Internal Bookings CSV upload
+- Facility setup file load/export
+- Browser-saved facility profiles
+- Merge Files, date, sport, and multi-space filters
+- Utilization, revenue, internal value, value heatmaps, and monthly trends
 
-## Default Hours
-- Mon–Fri: 9:00 AM–9:00 PM
-- Saturday: 9:30 AM–9:00 PM
-- Sunday: 9:30 AM–7:00 PM
-
-## GitHub Pages
-Upload `index.html` to the root of a GitHub repository and enable GitHub Pages.
+## New utilization engine
+- Parent/child alternatives are consolidated into physical rentable assets.
+- Court 1 / Court 1 West / Court 1 East count as one physical court asset.
+- Courts 2-4 follow the same rule.
+- Legacy a/b/c court labels remain recognized.
+- Full Field blocks Tunnel 1-7 and Practice Turf; child rentals block Full Field.
+- Overlapping reservations on the same physical asset count only once in utilization.
