@@ -1,6 +1,15 @@
-# MSS Facility Utilization Dashboard v2.0
+# MSS Facility Utilization Dashboard v2.0 — Final Production Build
 
-Production dashboard with separate Customer Reservations and Internal Reservations CSV uploads, facility configuration, adjusted parent/child capacity, executive utilization KPIs, economic-value analysis, heatmaps, and monthly trends.
+Upload `index.html` to the GitHub Pages repository root.
 
-## GitHub Pages
-Upload `index.html`, `README.md`, and `RELEASE_NOTES.md` to the repository root.
+## Final KPI layout
+- Overall Utilization (responds to the Utilization Source filter)
+- Customer Utilization
+- Internal Utilization
+- Customer vs. Internal Hours
+- Customer vs. Internal Value
+- Prime Time Utilization
+- Booked Rentable Hours, Adjusted Capacity, Lost Capacity, and Reservations
+- Customer Revenue, Estimated Internal Value, and Total Economic Value
+
+Customer vs. Internal Hours is time-based. Customer vs. Internal Value is dollar-based and treats internal value as estimated opportunity value, not collected revenue.

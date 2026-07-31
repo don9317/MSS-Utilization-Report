@@ -1,7 +1,10 @@
-# v2.0 Production Release
+# v2.0 Final Release Notes
 
-- Executive KPI row: Overall, Customer, Internal, Customer vs. Internal Split, and Prime Time Utilization.
-- Prime Time is Monday–Friday, 5:00–9:00 PM.
-- Moved file row counts and processing diagnostics to a collapsible Data Sources & Processing section at the bottom.
-- Preserved dual CSV uploads, utilization-source filtering, monthly trends, internal highlighting, economic value, facility setup, and parent/child capacity rules.
-- Added explanatory information bubbles to executive KPIs and data-source auditing.
+- Renamed Selected-Source Utilization to Overall Utilization.
+- Removed the duplicate Overall Utilization tile.
+- Renamed Customer vs. Internal Split to Customer vs. Internal Hours.
+- Replaced MSS Revenue Visibility and Internal Value % with one Customer vs. Internal Value tile.
+- Placed the time-based and dollar-based split tiles next to one another.
+- Consolidated the capacity row to four tiles.
+- Consolidated the financial row to Customer Revenue, Estimated Internal Value, and Total Economic Value.
+- Updated information bubbles to distinguish occupied hours, capacity, actual revenue, and estimated internal value.
