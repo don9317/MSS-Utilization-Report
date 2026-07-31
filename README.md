@@ -1,11 +1,12 @@
-# MSS Facility Utilization Dashboard v2.1
+# MSS Facility Utilization Dashboard v2.1.1
 
-Customer release for TM Fieldhouse.
+Customer release bug-fix package.
 
-## Use
-1. Open `index.html` or the GitHub Pages site.
-2. Select the Customer Reservations CSV and Internal Bookings CSV.
-3. Click **Analyze Utilization**.
-4. Use the dashboard filters to review utilization.
+## Fixed
+- Analyze Utilization now completes on the first click.
+- Analyze button displays a working spinner/status while files are processed.
+- Sport, date, utilization-source, and space filters now recalculate the report.
+- Space selector Done and Cancel controls now work reliably.
+- Multiple spaces can be checked before clicking Done.
 
-The TM Fieldhouse facility configuration is preloaded.
+Upload the contents of this folder to the root of the GitHub Pages repository.
