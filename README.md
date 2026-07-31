@@ -1,13 +1,6 @@
-# MSS Utilization Dashboard v1.13
+# MSS Facility Utilization Dashboard v2.0
 
-Open `index.html` locally or publish the folder with GitHub Pages.
+Production dashboard with separate Customer Reservations and Internal Reservations CSV uploads, facility configuration, adjusted parent/child capacity, executive utilization KPIs, economic-value analysis, heatmaps, and monthly trends.
 
-## Included
-- MSS and internal-bookings CSV uploads
-- Facility setup import/export
-- Parent/child physical-asset utilization logic
-- Monthly utilization reporting
-- Multi-select space filters
-- Clickable information bubbles beside dashboard headings
-
-Use `facility_setup_template.mss` as a starting profile, or create a setup through the dashboard's Space Setup wizard and export it.
+## GitHub Pages
+Upload `index.html`, `README.md`, and `RELEASE_NOTES.md` to the repository root.
