@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MSS Facility Utilization Dashboard v2.1.1.1</title>
+<title>MSS Facility Utilization Dashboard v2.1.2.1</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#14213d;--muted:#667085;--line:#d9e1ec;--accent:#174ea6;--good:#e8f5e9;--warn:#fff8e1;--bad:#ffebee}
 *{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
@@ -22,7 +22,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @keyframes mssSpin{to{transform:rotate(360deg)}}
 
 </style></head><body>
-<header><h1>MSS Facility Utilization Dashboard v2.1.1.1</h1><div class="sub">Customer and internal utilization, capacity opportunities, economic value, monthly trends, and facility-level operating insights.</div></header>
+<header><h1>MSS Facility Utilization Dashboard v2.1.2.1</h1><div class="sub">Customer and internal utilization, capacity opportunities, economic value, monthly trends, and facility-level operating insights.</div></header>
 <div class="wrap">
  <div class="card controls">
   <div class="field"><label>Upload MSS Reservations CSV</label><input type="file" id="mssFile" accept=".csv"><span class="note" id="mssFileStatus">No MSS file loaded</span></div>
@@ -315,42 +315,58 @@ function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;',
 function allSpaces(){return [...new Set(rows.flatMap(r=>r.areas).map(cleanAreaName))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}))}
 function buildSpaceMenu(){
  const spaces=allSpaces();
- if(!selectedSpaces.size || [...selectedSpaces].some(s=>!spaces.includes(s))) selectedSpaces=new Set(spaces);
+ if(!selectedSpaces.size || [...selectedSpaces].some(s=>!spaces.includes(s))){
+   selectedSpaces=new Set(spaces);
+ }
  const menu=document.getElementById('spaceMenu');
- let draftSpaces=new Set(selectedSpaces);
- const renderChecks=()=>{
-   menu.innerHTML=
-    '<div class="multiActions topActions"><button type="button" class="btn3" data-action="all">Select All</button><button type="button" class="btn3" data-action="none">Clear All</button></div>'+
-    spaces.map(s=>`<label class="opt"><input type="checkbox" value="${esc(s)}" ${draftSpaces.has(s)?'checked':''}> ${esc(s)}</label>`).join('')+
-    '<div class="multiActions"><button type="button" data-action="done">Done</button><button type="button" class="btn3" data-action="cancel">Cancel</button></div>';
+ const originalSelection=new Set(selectedSpaces);
+ let draftSelection=new Set(selectedSpaces);
+
+ menu.innerHTML=
+   '<div class="multiActions topActions">'+
+     '<button type="button" class="btn3" id="spaceSelectAll">Select All</button>'+
+     '<button type="button" class="btn3" id="spaceClearAll">Clear All</button>'+
+   '</div>'+
+   '<div id="spaceOptions">'+spaces.map((space,i)=>
+     `<label class="opt" for="spaceOpt${i}"><input id="spaceOpt${i}" type="checkbox" value="${esc(space)}" ${draftSelection.has(space)?'checked':''}> ${esc(space)}</label>`
+   ).join('')+'</div>'+
+   '<div class="multiActions">'+
+     '<button type="button" id="spaceDone">Done</button>'+
+     '<button type="button" class="btn3" id="spaceCancel">Cancel</button>'+
+   '</div>';
+
+ const syncDraft=()=>{
+   draftSelection=new Set(
+     [...menu.querySelectorAll('#spaceOptions input[type="checkbox"]:checked')].map(cb=>cb.value)
+   );
  };
- renderChecks();
- menu.onclick=(e)=>{
-   e.stopPropagation();
-   const action=e.target.closest('button')?.dataset?.action;
-   if(action==='all'){
-     draftSpaces=new Set(spaces); renderChecks(); return;
-   }
-   if(action==='none'){
-     draftSpaces=new Set(); renderChecks(); return;
-   }
-   if(action==='done'){
-     selectedSpaces=new Set(draftSpaces);
-     document.getElementById('spaceMulti').classList.remove('open');
-     updateSpaceBtn();
-     apply();
-     return;
-   }
-   if(action==='cancel'){
-     document.getElementById('spaceMulti').classList.remove('open');
-     updateSpaceBtn();
-     return;
-   }
-   const cb=e.target.closest('input[type="checkbox"]');
-   if(cb){
-     if(cb.checked)draftSpaces.add(cb.value);else draftSpaces.delete(cb.value);
-   }
- };
+
+ menu.querySelector('#spaceOptions').addEventListener('change',syncDraft);
+ menu.querySelector('#spaceSelectAll').addEventListener('click',e=>{
+   e.preventDefault();e.stopPropagation();
+   menu.querySelectorAll('#spaceOptions input[type="checkbox"]').forEach(cb=>cb.checked=true);
+   syncDraft();
+ });
+ menu.querySelector('#spaceClearAll').addEventListener('click',e=>{
+   e.preventDefault();e.stopPropagation();
+   menu.querySelectorAll('#spaceOptions input[type="checkbox"]').forEach(cb=>cb.checked=false);
+   syncDraft();
+ });
+ menu.querySelector('#spaceDone').addEventListener('click',e=>{
+   e.preventDefault();e.stopPropagation();
+   syncDraft();
+   selectedSpaces=new Set(draftSelection);
+   document.getElementById('spaceMulti').classList.remove('open');
+   updateSpaceBtn();
+   scheduleApply('Updating selected spaces…');
+ });
+ menu.querySelector('#spaceCancel').addEventListener('click',e=>{
+   e.preventDefault();e.stopPropagation();
+   selectedSpaces=new Set(originalSelection);
+   document.getElementById('spaceMulti').classList.remove('open');
+   updateSpaceBtn();
+ });
+ menu.addEventListener('click',e=>e.stopPropagation());
  updateSpaceBtn();
 }
 function updateSpaceBtn(){let btn=document.getElementById('spaceBtn'), n=selectedSpaces.size, total=allSpaces().length; btn.textContent=n===total?'All Spaces':n===0?'No Spaces':(n<=3?[...selectedSpaces].join(', '):`${n} spaces selected`)}
@@ -411,47 +427,128 @@ function occupiedForSlot(slotRows,units,slotStart,slotEnd){
  }
  return occupied;
 }
-function compute(){let frows=rows.filter(r=>inFilter(r)&&sourceMatches(r)); let units=selectedUnits(), capUnits=capacityForSelection(); let dates=dateList(); let byDay={}, byHour={}, bySport={}, bySpace={}, heat={}, valueHeat={}, internalHeat={}, byHourFinance={}, bySpaceFinance={}, bySportFinance={}, monthlyTrend={}, monthlySummary={}; let totalCap=0,totalBook=0,totalCustomerRev=0,totalInternalRev=0,totalCustomerHours=0,totalInternalHours=0,totalCustomerOccupied=0,totalInternalOccupied=0,totalCombinedOccupied=0,primeCap=0,primeBooked=0;
- const slots=[]; for(const d of dates){let dow=d.getDay(), [op,cl]=operatingRange(dow); for(let h=Math.floor(op/60)*60; h<cl; h+=60){let slotEnd=Math.min(h+60,cl), mins=overlap(h,slotEnd,op,cl); if(mins>0)slots.push({d:new Date(d),dow,h,end:slotEnd,mins})}}
- // Raw-space table remains useful for seeing which booking labels were used.
- for(const sl of slots){ for(const sp of selectedSpaces){ add(bySpace, sp, 0, sl.mins/60); } }
- for(const sl of slots){
-  let cap=capUnits*sl.mins/60; totalCap+=cap;
-  let allSlotRows=rows.filter(r=>inFilter(r)&&fmtDate(r.date)===fmtDate(sl.d)&&overlap(r.start,r.end,sl.h,sl.end)>0);
-  let customerSlotRows=allSlotRows.filter(r=>!r.internal), internalSlotRows=allSlotRows.filter(r=>r.internal);
-  let customerOcc=Math.min(occupiedForSlot(customerSlotRows,units,sl.h,sl.end),cap);
-  let internalOcc=Math.min(occupiedForSlot(internalSlotRows,units,sl.h,sl.end),cap);
-  let combinedOcc=Math.min(occupiedForSlot(allSlotRows,units,sl.h,sl.end),cap);
-  totalCustomerOccupied+=customerOcc; totalInternalOccupied+=internalOcc; totalCombinedOccupied+=combinedOcc;
-  if(sl.dow>=1&&sl.dow<=5&&sl.h>=1020&&sl.h<1260){primeCap+=cap;primeBooked+=combinedOcc;}
-  let slotRows=frows.filter(r=>fmtDate(r.date)===fmtDate(sl.d)&&overlap(r.start,r.end,sl.h,sl.end)>0);
-  let occ=Math.min(occupiedForSlot(slotRows,units,sl.h,sl.end),cap);
-  for(const r of slotRows){
-   let dur=overlap(r.start,r.end,sl.h,sl.end)/60;
-   let bookedUnits=bookedUnitsForReservation(r,units);
-   let rowDur=(r.end-r.start)/60 || 1;
-   let revPart=r.revenue*(dur/rowDur);
-   let custRev=r.internal?0:revPart, intRev=r.internal?revPart:0;
-   let custH=r.internal?0:bookedUnits*dur, intH=r.internal?bookedUnits*dur:0;
-   addFinance(byHourFinance,minToLabel(sl.h),custRev,intRev,custH,intH);
-   valueHeat[DAYS[sl.dow]] ??={}; internalHeat[DAYS[sl.dow]] ??={};
-   addValue(valueHeat[DAYS[sl.dow]],minToLabel(sl.h),custRev+intRev);
-   addValue(internalHeat[DAYS[sl.dow]],minToLabel(sl.h),intRev);
-   totalCustomerRev+=custRev; totalInternalRev+=intRev; totalCustomerHours+=custH; totalInternalHours+=intH;
-  }
-  totalBook+=occ; add(byDay,DAYS[sl.dow],occ,cap); add(byHour,minToLabel(sl.h),occ,cap);
-  heat[DAYS[sl.dow]] ??={}; add(heat[DAYS[sl.dow]],minToLabel(sl.h),occ,cap);
-  let mon=monthLabel(sl.d); add(monthlySummary,mon,occ,cap); let block=timeBlock(sl.h); if(block){addTrend(monthlyTrend,mon,block,DAYS[sl.dow],occ,cap);}
+function compute(){
+ const sd=parseLocalDate(document.getElementById('startDate').value);
+ const ed=parseLocalDate(document.getElementById('endDate').value);
+ const sportChoice=selectedSport();
+ const units=selectedUnits();
+ const capUnits=units.reduce((sum,u)=>sum+(u.weight||1),0);
+ const selectedArray=[...selectedSpaces];
+ const selectedNorm=new Set(selectedArray.map(norm));
+ const selectedFamilies=new Set(selectedArray.map(x=>familyFor(x)?.name).filter(Boolean));
+
+ const matchesSpace=r=>r.areas.some(area=>{
+   const clean=cleanAreaName(area);
+   if(selectedNorm.has(norm(clean)))return true;
+   const fam=familyFor(clean);
+   return fam && selectedFamilies.has(fam.name);
+ });
+ const baseRows=rows.filter(r=>{
+   if(sd&&r.date<sd)return false;
+   if(ed&&r.date>ed)return false;
+   if(sportChoice!=='__all__'&&r.sport!==sportChoice)return false;
+   return matchesSpace(r);
+ });
+ const frows=baseRows.filter(sourceMatches);
+ const allByDate=new Map(), filteredByDate=new Map();
+ for(const r of baseRows){
+   const k=fmtDate(r.date);
+   if(!allByDate.has(k))allByDate.set(k,[]);
+   allByDate.get(k).push(r);
  }
  for(const r of frows){
-  let dur=(r.end-r.start)/60, bu=bookedUnitsForReservation(r,units);
-  add(bySport,r.sport,dur*bu,0);
-  addFinance(bySportFinance,r.sport,r.internal?0:r.revenue,r.internal?r.revenue:0,r.internal?0:dur*bu,r.internal?dur*bu:0);
-  let matched=r.areas.filter(a=>selectedSpaces.has(cleanAreaName(a)) || [...selectedSpaces].some(sa=>related(a,sa)));
-  let share=matched.length? r.revenue/matched.length : 0;
-  for(const a of matched){ add(bySpace,cleanAreaName(a),dur,0); addFinance(bySpaceFinance,cleanAreaName(a),r.internal?0:share,r.internal?share:0,r.internal?0:dur,r.internal?dur:0); }
+   const k=fmtDate(r.date);
+   if(!filteredByDate.has(k))filteredByDate.set(k,[]);
+   filteredByDate.get(k).push(r);
  }
- return {frows,byDay,byHour,bySport,bySportFinance,bySpace,heat,valueHeat,internalHeat,monthlyTrend,monthlySummary,totalCap,totalBook,capUnits,byHourFinance,bySpaceFinance,totalCustomerRev,totalInternalRev,totalCustomerHours,totalInternalHours,totalCustomerOccupied,totalInternalOccupied,totalCombinedOccupied,primeCap,primeBooked};
+
+ let byDay={},byHour={},bySport={},bySpace={},heat={},valueHeat={},internalHeat={},
+     byHourFinance={},bySpaceFinance={},bySportFinance={},monthlyTrend={},monthlySummary={};
+ let totalCap=0,totalBook=0,totalCustomerRev=0,totalInternalRev=0,totalCustomerHours=0,totalInternalHours=0,
+     totalCustomerOccupied=0,totalInternalOccupied=0,totalCombinedOccupied=0,primeCap=0,primeBooked=0;
+
+ const dates=dateList();
+ for(const d of dates){
+   const dateKey=fmtDate(d), dow=d.getDay(), [op,cl]=operatingRange(dow);
+   const dayRows=allByDate.get(dateKey)||[];
+   const dayFiltered=filteredByDate.get(dateKey)||[];
+   for(let h=Math.floor(op/60)*60;h<cl;h+=60){
+     const slotEnd=Math.min(h+60,cl);
+     const mins=overlap(h,slotEnd,op,cl);
+     if(mins<=0)continue;
+     const cap=capUnits*mins/60;
+     totalCap+=cap;
+
+     const allSlotRows=dayRows.filter(r=>overlap(r.start,r.end,h,slotEnd)>0);
+     const customerRows=allSlotRows.filter(r=>!r.internal);
+     const internalRows=allSlotRows.filter(r=>r.internal);
+     const customerOcc=Math.min(occupiedForSlot(customerRows,units,h,slotEnd),cap);
+     const internalOcc=Math.min(occupiedForSlot(internalRows,units,h,slotEnd),cap);
+     const combinedOcc=Math.min(occupiedForSlot(allSlotRows,units,h,slotEnd),cap);
+     totalCustomerOccupied+=customerOcc;
+     totalInternalOccupied+=internalOcc;
+     totalCombinedOccupied+=combinedOcc;
+     if(dow>=1&&dow<=5&&h>=1020&&h<1260){primeCap+=cap;primeBooked+=combinedOcc;}
+
+     const slotRows=dayFiltered.filter(r=>overlap(r.start,r.end,h,slotEnd)>0);
+     const occ=Math.min(occupiedForSlot(slotRows,units,h,slotEnd),cap);
+     for(const r of slotRows){
+       const dur=overlap(r.start,r.end,h,slotEnd)/60;
+       const bookedUnits=bookedUnitsForReservation(r,units);
+       const rowDur=(r.end-r.start)/60||1;
+       const revPart=r.revenue*(dur/rowDur);
+       const custRev=r.internal?0:revPart, intRev=r.internal?revPart:0;
+       const custH=r.internal?0:bookedUnits*dur, intH=r.internal?bookedUnits*dur:0;
+       addFinance(byHourFinance,minToLabel(h),custRev,intRev,custH,intH);
+       valueHeat[DAYS[dow]]??={};internalHeat[DAYS[dow]]??={};
+       addValue(valueHeat[DAYS[dow]],minToLabel(h),custRev+intRev);
+       addValue(internalHeat[DAYS[dow]],minToLabel(h),intRev);
+       totalCustomerRev+=custRev;totalInternalRev+=intRev;
+       totalCustomerHours+=custH;totalInternalHours+=intH;
+     }
+     totalBook+=occ;
+     add(byDay,DAYS[dow],occ,cap);
+     add(byHour,minToLabel(h),occ,cap);
+     heat[DAYS[dow]]??={};
+     add(heat[DAYS[dow]],minToLabel(h),occ,cap);
+     const mon=monthLabel(d);
+     add(monthlySummary,mon,occ,cap);
+     const block=timeBlock(h);
+     if(block)addTrend(monthlyTrend,mon,block,DAYS[dow],occ,cap);
+   }
+ }
+
+ // Capacity for the raw booking-label table.
+ let totalOpenHours=0;
+ for(const d of dates){
+   const [op,cl]=operatingRange(d.getDay());
+   totalOpenHours+=Math.max(0,cl-op)/60;
+ }
+ for(const sp of selectedSpaces)add(bySpace,sp,0,totalOpenHours);
+
+ for(const r of frows){
+   const dur=(r.end-r.start)/60;
+   const bu=bookedUnitsForReservation(r,units);
+   add(bySport,r.sport,dur*bu,0);
+   addFinance(bySportFinance,r.sport,r.internal?0:r.revenue,r.internal?r.revenue:0,
+     r.internal?0:dur*bu,r.internal?dur*bu:0);
+   const matched=r.areas.filter(a=>{
+     const clean=cleanAreaName(a);
+     const fam=familyFor(clean);
+     return selectedNorm.has(norm(clean))||(fam&&selectedFamilies.has(fam.name));
+   });
+   const share=matched.length?r.revenue/matched.length:0;
+   for(const area of matched){
+     const clean=cleanAreaName(area);
+     add(bySpace,clean,dur,0);
+     addFinance(bySpaceFinance,clean,r.internal?0:share,r.internal?share:0,
+       r.internal?0:dur,r.internal?dur:0);
+   }
+ }
+ return {frows,byDay,byHour,bySport,bySportFinance,bySpace,heat,valueHeat,internalHeat,
+   monthlyTrend,monthlySummary,totalCap,totalBook,capUnits,byHourFinance,bySpaceFinance,
+   totalCustomerRev,totalInternalRev,totalCustomerHours,totalInternalHours,
+   totalCustomerOccupied,totalInternalOccupied,totalCombinedOccupied,primeCap,primeBooked};
 }
 function add(obj,k,b,c){obj[k]??={booked:0,cap:0}; obj[k].booked+=b; obj[k].cap+=c||0}
 function addValue(obj,k,v){obj[k]??={value:0}; obj[k].value+=v||0}
@@ -481,6 +578,24 @@ function renderMonthlyTrend(trend){const blocks=['Before 12 PM','12 PM–5 PM','
 
 function updateValidation(){let internalTagged=internalRawRows.filter(r=>isInternalCustomer(r['Customer']||r['Customer Name']||'')).length; document.getElementById('vMssRows').textContent=mssRawRows.length.toLocaleString(); document.getElementById('vInternalRows').textContent=internalRawRows.length.toLocaleString(); document.getElementById('vInternalTagged').textContent=internalTagged.toLocaleString(); document.getElementById('vCombinedRows').textContent=(mssRawRows.length+internalRawRows.length).toLocaleString(); updateFacilityDisplay(); document.getElementById('vDataStatus').textContent=rows.length?'Loaded — '+rows.length.toLocaleString()+' records ready':'Ready — upload files, then click Apply';}
 function apply(){showErr(''); updateValidation(); if(!rows.length){showErr('No data loaded. Select the Customer Reservations CSV and/or Internal Bookings CSV, then click Analyze Utilization.'); return} let sourceLabel=utilSourceLabel(); let sourceTile=document.getElementById('vUtilSource'); if(sourceTile)sourceTile.textContent=sourceLabel; let sourceNote=document.getElementById('timeHeatSourceNote'); if(sourceNote)sourceNote.textContent='('+sourceLabel+')'; let c=compute(); let totalVal=c.totalCustomerRev+c.totalInternalRev; let overallPct=pct(c.totalCombinedOccupied,c.totalCap), customerPct=pct(c.totalCustomerOccupied,c.totalCap), internalPct=pct(c.totalInternalOccupied,c.totalCap), primePct=pct(c.primeBooked,c.primeCap), splitDen=c.totalCustomerOccupied+c.totalInternalOccupied, customerSplit=splitDen?pct(c.totalCustomerOccupied,splitDen):0, internalSplit=splitDen?pct(c.totalInternalOccupied,splitDen):0; document.getElementById('kOverallExec').textContent=pct(c.totalBook,c.totalCap).toFixed(1)+'%'; document.getElementById('kOverallHours').textContent=num(c.totalBook)+' occupied hours | '+sourceLabel; document.getElementById('kCustomerUtil').textContent=customerPct.toFixed(1)+'%'; document.getElementById('kCustomerHours').textContent=num(c.totalCustomerOccupied)+' customer hours'; document.getElementById('kInternalUtil').textContent=internalPct.toFixed(1)+'%'; document.getElementById('kInternalHours').textContent=num(c.totalInternalOccupied)+' internal hours'; document.getElementById('kSplitText').textContent=splitDen?customerSplit.toFixed(0)+'% / '+internalSplit.toFixed(0)+'%':'—'; document.getElementById('splitCustomerBar').style.width=customerSplit+'%'; document.getElementById('splitInternalBar').style.width=internalSplit+'%'; document.getElementById('splitCustomerLabel').textContent='Customer '+(splitDen?customerSplit.toFixed(0)+'%':'—'); document.getElementById('splitInternalLabel').textContent='Internal '+(splitDen?internalSplit.toFixed(0)+'%':'—'); let splitDetail=document.getElementById('kSplitHoursDetail'); if(splitDetail) splitDetail.textContent=splitDen?num(c.totalCustomerOccupied)+' customer hrs | '+num(c.totalInternalOccupied)+' internal hrs':'No occupied hours'; document.getElementById('kPrimeUtil').textContent=c.primeCap?primePct.toFixed(1)+'%':'—'; document.getElementById('kPrimeHours').textContent=c.primeCap?num(c.primeBooked)+' of '+num(c.primeCap)+' hrs | Mon–Fri, 5–9 PM':'Mon–Fri, 5–9 PM'; document.getElementById('kBooked').textContent=num(c.totalBook); document.getElementById('kCap').textContent=num(c.totalCap); document.getElementById('kLost').textContent=num(Math.max(0,c.totalCap-c.totalBook)); document.getElementById('kRes').textContent=c.frows.length.toLocaleString(); let resSmall=document.getElementById('kResSmall'); if(resSmall) resSmall.textContent=`MSS rows: ${mssRawRows.length.toLocaleString()} | Internal rows: ${internalRawRows.length.toLocaleString()}`; document.getElementById('kCustRev').textContent=money(c.totalCustomerRev); document.getElementById('kIntRev').textContent=money(c.totalInternalRev); document.getElementById('kTotalVal').textContent=money(totalVal); let customerValuePct=totalVal?pct(c.totalCustomerRev,totalVal):0, internalValuePct=totalVal?pct(c.totalInternalRev,totalVal):0; let valueSplit=document.getElementById('kValueSplitText'); if(valueSplit)valueSplit.textContent=totalVal?customerValuePct.toFixed(1)+'% / '+internalValuePct.toFixed(1)+'%':'—'; let vcb=document.getElementById('valueCustomerBar'); if(vcb)vcb.style.width=customerValuePct+'%'; let vib=document.getElementById('valueInternalBar'); if(vib)vib.style.width=internalValuePct+'%'; let vcl=document.getElementById('valueCustomerLabel'); if(vcl)vcl.textContent='Customer '+(totalVal?customerValuePct.toFixed(1)+'%':'—'); let vil=document.getElementById('valueInternalLabel'); if(vil)vil.textContent='Internal '+(totalVal?internalValuePct.toFixed(1)+'%':'—'); let vsd=document.getElementById('kValueSplitDetail'); if(vsd)vsd.textContent=totalVal?money(c.totalCustomerRev)+' customer | '+money(c.totalInternalRev)+' internal':'No economic value'; renderTable('dayTbl',c.byDay,DAYS); renderTable('hourTbl',c.byHour,Object.keys(c.byHour)); renderSportTable(c.bySport,c.bySportFinance); renderTable('spaceTbl',c.bySpace); renderRevenueHour(c.byHourFinance); renderYieldHour(c.byHourFinance); renderActivity(c.byHourFinance); renderRevenueSpace(c.bySpaceFinance); renderHeat(c.heat); renderValueHeat(c.valueHeat,'valueHeat'); renderValueHeat(c.internalHeat,'internalHeat'); renderMonthlyUtilChart(c.monthlySummary); renderMonthlyTrend(c.monthlyTrend); renderDetails(c.frows); renderInsights(c);}
+let applyTimer=null;
+function scheduleApply(message='Updating report…'){
+ if(!rows.length)return;
+ const status=document.getElementById('processStatus');
+ if(status){status.className='processStatus busy';status.textContent=message;}
+ clearTimeout(applyTimer);
+ applyTimer=setTimeout(()=>{
+   try{
+     apply();
+     if(status){status.className='processStatus ok';status.textContent='Report updated';}
+   }catch(err){
+     if(status){status.className='processStatus';status.textContent='Update failed';}
+     showErr(err.message||String(err));
+     console.error(err);
+   }
+ },30);
+}
+
 function financeKeys(obj){return Object.keys(obj).sort((a,b)=>timeToMin(a)-timeToMin(b))}
 function renderRevenueHour(obj){let html='<tr><th>Hour</th><th>MSS Customer Revenue</th><th>Internal Value</th><th>Total Value</th><th>MSS Visibility</th></tr>'; for(const k of financeKeys(obj)){let v=obj[k], total=v.customerRev+v.internalRev; html+=`<tr><td>${esc(k)}</td><td>${money1(v.customerRev)}</td><td>${money1(v.internalRev)}</td><td>${money1(total)}</td><td>${total?pct(v.customerRev,total).toFixed(1)+'%':'—'}</td></tr>`} document.getElementById('revHourTbl').innerHTML=html;}
 function renderYieldHour(obj){let html='<tr><th>Hour</th><th>Total Value</th><th>Booked Hours</th><th>Value / Booked Hour</th></tr>'; for(const k of financeKeys(obj)){let v=obj[k], total=v.customerRev+v.internalRev, hrs=v.customerHours+v.internalHours; html+=`<tr><td>${esc(k)}</td><td>${money1(total)}</td><td>${num(hrs)}</td><td>${hrs?money1(total/hrs):'—'}</td></tr>`} document.getElementById('yieldHourTbl').innerHTML=html;}
@@ -553,7 +668,7 @@ document.getElementById('setup').onclick=()=>{document.getElementById('modal').c
 document.getElementById('addRule').onclick=addRelationship; document.getElementById('loadTmDefaults').onclick=loadTmDefaultRelationships; document.getElementById('exportSetupModal').onclick=()=>{try{CONFIG.facilityName=document.getElementById('facilityName').value||'Facility'; CONFIG.hours={sunday:[sunOpen.value,sunClose.value],monday:[monOpen.value,monClose.value],tuesday:[tueOpen.value,tueClose.value],wednesday:[wedOpen.value,wedClose.value],thursday:[thuOpen.value,thuClose.value],friday:[friOpen.value,friClose.value],saturday:[satOpen.value,satClose.value]}; CONFIG.families=collectRelationshipsFromTable(); exportFacilitySetup();}catch(e){document.getElementById('setupStatus').textContent='Could not save setup: '+e.message}};
 document.getElementById('closeSetup').onclick=()=>document.getElementById('modal').classList.remove('show'); document.getElementById('saveSetup').onclick=()=>{try{CONFIG.facilityName=document.getElementById('facilityName').value||'Facility'; CONFIG.hours={sunday:[sunOpen.value,sunClose.value],monday:[monOpen.value,monClose.value],tuesday:[tueOpen.value,tueClose.value],wednesday:[wedOpen.value,wedClose.value],thursday:[thuOpen.value,thuClose.value],friday:[friOpen.value,friClose.value],saturday:[satOpen.value,satClose.value]}; let details=document.querySelector('details'); if(details && details.open && document.getElementById('rules').value.trim()){try{CONFIG.families=JSON.parse(document.getElementById('rules').value)}catch(e){CONFIG.families=collectRelationshipsFromTable();}} else {CONFIG.families=collectRelationshipsFromTable();} updateFacilityDisplay('Setup applied: '+(CONFIG.facilityName||'Facility')+' ('+CONFIG.families.length+' parent/child rules)'); try{localStorage.setItem('mssUtilizationFacilitySetup', JSON.stringify(currentSetupPayload()))}catch(e){} document.getElementById('rules').value=JSON.stringify(CONFIG.families,null,2); document.getElementById('setupStatus').innerHTML='<span class="ok">Setup applied and saved to this browser.</span>'; buildSpaceMenu(); apply(); setTimeout(()=>document.getElementById('modal').classList.remove('show'),500)}catch(e){document.getElementById('setupStatus').textContent='Setup error: '+e.message}};
 ['startDate','endDate','sport','utilSource'].forEach(id=>{
-  document.getElementById(id).addEventListener('change',()=>{if(rows.length)apply();});
+  document.getElementById(id).addEventListener('change',()=>scheduleApply('Updating filters…'));
 });
 if(!loadSetupFromBrowser()) updateFacilityDisplay('Default TM setup active. Load a facility setup file or complete Space Setup for another facility.'); updateValidation(); updateAnalyzeReady(); showErr('Select the Customer Reservations CSV and/or Internal Bookings CSV, then click Analyze Utilization. TM Fieldhouse setup is preloaded.');
 </script></body></html>

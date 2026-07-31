@@ -1,8 +1,5 @@
-# Release Notes — v2.1.1
+# Release Notes — v2.1.2
 
-## Corrected
-1. Space selector Done and Cancel buttons.
-2. First-click Analyze Utilization behavior.
-3. Analyze processing animation and status.
-4. Sport, date, source, and space filter event handling.
-5. Space selections are staged until Done; Cancel discards changes.
+This release replaces the previous space-menu event delegation with explicit button listeners and replaces the slow calculation loop with a date-indexed calculation engine.
+
+The calculation methodology and parent/child capacity rules are unchanged.

@@ -1,12 +1,10 @@
-# MSS Facility Utilization Dashboard v2.1.1
+# MSS Facility Utilization Dashboard v2.1.2
 
-Customer release bug-fix package.
+Performance and control reliability release.
 
 ## Fixed
-- Analyze Utilization now completes on the first click.
-- Analyze button displays a working spinner/status while files are processed.
-- Sport, date, utilization-source, and space filters now recalculate the report.
-- Space selector Done and Cancel controls now work reliably.
-- Multiple spaces can be checked before clicking Done.
-
-Upload the contents of this folder to the root of the GitHub Pages repository.
+- Spaces Select All, Clear All, Done, and Cancel controls.
+- Sport and other filters no longer hang on large datasets.
+- Calculation engine indexes reservations by date rather than repeatedly scanning every row for every hour.
+- Filter changes display a brief update status and complete asynchronously.
+- Removed a duplicated JavaScript declaration that could prevent controls from working.
