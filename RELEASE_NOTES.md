@@ -1,10 +1,8 @@
-# v2.0 Final Release Notes
+# Version 2.1 — Customer Release
 
-- Renamed Selected-Source Utilization to Overall Utilization.
-- Removed the duplicate Overall Utilization tile.
-- Renamed Customer vs. Internal Split to Customer vs. Internal Hours.
-- Replaced MSS Revenue Visibility and Internal Value % with one Customer vs. Internal Value tile.
-- Placed the time-based and dollar-based split tiles next to one another.
-- Consolidated the capacity row to four tiles.
-- Consolidated the financial row to Customer Revenue, Estimated Internal Value, and Total Economic Value.
-- Updated information bubbles to distinguish occupied hours, capacity, actual revenue, and estimated internal value.
+- Removed the separate **Merge Files** button.
+- Added one-step **Analyze Utilization** workflow.
+- Analyze now reads, merges, validates, and refreshes the dashboard.
+- Added clear file-selection and processing status messages.
+- Analyze remains disabled until at least one reservation file is selected.
+- TM Fieldhouse configuration remains preloaded.

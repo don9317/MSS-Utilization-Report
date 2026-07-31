@@ -1,15 +1,11 @@
-# MSS Facility Utilization Dashboard v2.0 — Final Production Build
+# MSS Facility Utilization Dashboard v2.1
 
-Upload `index.html` to the GitHub Pages repository root.
+Customer release for TM Fieldhouse.
 
-## Final KPI layout
-- Overall Utilization (responds to the Utilization Source filter)
-- Customer Utilization
-- Internal Utilization
-- Customer vs. Internal Hours
-- Customer vs. Internal Value
-- Prime Time Utilization
-- Booked Rentable Hours, Adjusted Capacity, Lost Capacity, and Reservations
-- Customer Revenue, Estimated Internal Value, and Total Economic Value
+## Use
+1. Open `index.html` or the GitHub Pages site.
+2. Select the Customer Reservations CSV and Internal Bookings CSV.
+3. Click **Analyze Utilization**.
+4. Use the dashboard filters to review utilization.
 
-Customer vs. Internal Hours is time-based. Customer vs. Internal Value is dollar-based and treats internal value as estimated opportunity value, not collected revenue.
+The TM Fieldhouse facility configuration is preloaded.
