@@ -1,17 +1,3 @@
-# Release Notes — v2.2
+# Release Notes — v2.2.1
 
-## Production branding
-- Final product title: MSS Facility Utilization Dashboard
-- Added subtitle: Executive Operations Dashboard for Sports Facilities
-- Added branded footer with:
-  - Dashboard version
-  - Active facility name
-  - My Sport Space copyright and website
-  - Confidentiality notice
-
-## Terminology
-- Uses booked hours and available hours
-- Uses Customer Reservations and Facility Internal Reservations
-- Uses Reservation Type instead of Utilization Source
-
-No utilization calculation changes were made in this release.
+Production wording and branding applied to the stable v2.1.2 code base.

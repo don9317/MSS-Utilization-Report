@@ -1,23 +1,3 @@
-# MSS Facility Utilization Dashboard v2.2
+# MSS Facility Utilization Dashboard v2.2.1
 
-Production release for facility utilization analysis.
-
-## Product name
-MSS Facility Utilization Dashboard
-
-## Subtitle
-Executive Operations Dashboard for Sports Facilities
-
-## Included
-- Customer Reservations CSV upload
-- Facility Internal Reservations CSV upload
-- Automatic file merge and analysis
-- Customer, internal, and combined reporting
-- Monthly, day, hour, sport, and space utilization
-- Parent/child space capacity rules
-- Plain-language information bubbles
-- Branded footer with active facility name
-- Data Sources & Processing audit section
-
-## GitHub Pages
-Upload `index.html`, `README.md`, and `RELEASE_NOTES.md` to the root of the GitHub repository.
+Clean production release built from the stable v2.1.2 application. No upload, Analyze, filter, space-selector, capacity, or calculation logic was changed.
