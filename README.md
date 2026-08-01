@@ -1,10 +1,9 @@
-# MSS Facility Utilization Dashboard v2.1.2
+# MSS Facility Utilization Dashboard v2.1.3
 
-Performance and control reliability release.
+Plain-language terminology update.
 
-## Fixed
-- Spaces Select All, Clear All, Done, and Cancel controls.
-- Sport and other filters no longer hang on large datasets.
-- Calculation engine indexes reservations by date rather than repeatedly scanning every row for every hour.
-- Filter changes display a brief update status and complete asynchronously.
-- Removed a duplicated JavaScript declaration that could prevent controls from working.
+- Replaced technical phrases such as “physical asset,” “occupied,” and “utilization source.”
+- Standardized terms: booked hours, available hours, customer reservations, internal reservations, combined, and reservation type.
+- Simplified information bubbles throughout the dashboard.
+
+No calculation logic was changed.

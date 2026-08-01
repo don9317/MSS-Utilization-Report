@@ -1,5 +1,9 @@
-# Release Notes — v2.1.2
+# Release Notes — v2.1.3
 
-This release replaces the previous space-menu event delegation with explicit button listeners and replaces the slow calculation loop with a date-indexed calculation engine.
+- Simplified KPI and report information bubbles.
+- Replaced “occupied” with “booked.”
+- Replaced “Utilization Source” with “Reservation Type.”
+- Replaced “Internal Bookings” with “Internal Reservations.”
+- Removed unnecessary “physical asset” wording.
 
-The calculation methodology and parent/child capacity rules are unchanged.
+Calculations and filters are unchanged.
