@@ -1,9 +1,17 @@
-# Release Notes — v2.1.3
+# Release Notes — v2.2
 
-- Simplified KPI and report information bubbles.
-- Replaced “occupied” with “booked.”
-- Replaced “Utilization Source” with “Reservation Type.”
-- Replaced “Internal Bookings” with “Internal Reservations.”
-- Removed unnecessary “physical asset” wording.
+## Production branding
+- Final product title: MSS Facility Utilization Dashboard
+- Added subtitle: Executive Operations Dashboard for Sports Facilities
+- Added branded footer with:
+  - Dashboard version
+  - Active facility name
+  - My Sport Space copyright and website
+  - Confidentiality notice
 
-Calculations and filters are unchanged.
+## Terminology
+- Uses booked hours and available hours
+- Uses Customer Reservations and Facility Internal Reservations
+- Uses Reservation Type instead of Utilization Source
+
+No utilization calculation changes were made in this release.

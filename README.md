@@ -1,9 +1,23 @@
-# MSS Facility Utilization Dashboard v2.1.3
+# MSS Facility Utilization Dashboard v2.2
 
-Plain-language terminology update.
+Production release for facility utilization analysis.
 
-- Replaced technical phrases such as “physical asset,” “occupied,” and “utilization source.”
-- Standardized terms: booked hours, available hours, customer reservations, internal reservations, combined, and reservation type.
-- Simplified information bubbles throughout the dashboard.
+## Product name
+MSS Facility Utilization Dashboard
 
-No calculation logic was changed.
+## Subtitle
+Executive Operations Dashboard for Sports Facilities
+
+## Included
+- Customer Reservations CSV upload
+- Facility Internal Reservations CSV upload
+- Automatic file merge and analysis
+- Customer, internal, and combined reporting
+- Monthly, day, hour, sport, and space utilization
+- Parent/child space capacity rules
+- Plain-language information bubbles
+- Branded footer with active facility name
+- Data Sources & Processing audit section
+
+## GitHub Pages
+Upload `index.html`, `README.md`, and `RELEASE_NOTES.md` to the root of the GitHub repository.

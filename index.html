@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MSS Facility Utilization Dashboard v2.1.3.1</title>
+<title>MSS Facility Utilization Dashboard v2.2</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#14213d;--muted:#667085;--line:#d9e1ec;--accent:#174ea6;--good:#e8f5e9;--warn:#fff8e1;--bad:#ffebee}
 *{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
@@ -21,8 +21,21 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #apply.analyzing::before{content:'';position:absolute;left:12px;top:50%;width:13px;height:13px;margin-top:-7px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:mssSpin .75s linear infinite}
 @keyframes mssSpin{to{transform:rotate(360deg)}}
 
+
+.productFooter{
+  margin-top:20px;
+  padding:16px 12px 6px;
+  border-top:1px solid var(--line);
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.65;
+}
+.productFooter strong{color:#344054}
+.productFooter .confidential{font-size:11px;margin-top:3px}
+
 </style></head><body>
-<header><h1>MSS Facility Utilization Dashboard v2.1.3.1</h1><div class="sub">Customer and internal utilization, capacity opportunities, economic value, monthly trends, and facility-level operating insights.</div></header>
+<header><h1>MSS Facility Utilization Dashboard</h1><div class="sub">Executive Operations Dashboard for Sports Facilities</div></header>
 <div class="wrap">
  <div class="card controls">
   <div class="field"><label>Upload MSS Reservations CSV</label><input type="file" id="mssFile" accept=".csv"><span class="note" id="mssFileStatus">No MSS file loaded</span></div>
@@ -82,10 +95,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
  <div class="card" style="margin-top:14px"><h3>Monthly Utilization Trend by Time Block<button type="button" class="infoBtn" aria-label="Information about Monthly Utilization Trend by Time Block" data-info-title="Monthly Utilization Trend by Time Block" data-info="Monthly utilization broken into before noon, noon–5 PM, and 5–9 PM to show how different parts of the day are changing.">i</button></h3><p class="note">Utilization by month, day of week, and time block: before 12 PM, 12 PM–5 PM, and 5 PM–9 PM. Bars use the same utilization calculation as the main heatmap, using the selected Reservation Type and adjusted capacity.</p><div class="scroll" style="max-height:460px"><table class="chartTable" id="monthlyTrendTbl"></table></div></div>
  <div class="card" style="margin-top:14px"><h3>Reservation Detail<button type="button" class="infoBtn" aria-label="Information about Reservation Detail" data-info-title="Reservation Detail" data-info="Up to 500 matching reservation records used in the current report, including source, space, sport, value, and status.">i</button></h3><div class="scroll"><table id="detailTbl"></table></div></div>
 
- <div class="card" style="margin-top:14px"><details class="dataSources"><summary>Data Sources &amp; Processing <button type="button" class="infoBtn" aria-label="Information about Data Sources and Processing" data-info-title="Data Sources & Processing" data-info="Audit information showing which files and facility configuration were used. These counts support troubleshooting and do not represent facility performance.">i</button></summary><div class="sourceGrid"><div class="sourceItem"><b>Customer Reservation Rows</b><span id="vMssRows">0</span><div class="note" id="mssSourceName">No customer file loaded</div></div><div class="sourceItem"><b>Internal Reservation Rows</b><span id="vInternalRows">0</span><div class="note" id="internalSourceName">No internal file loaded</div></div><div class="sourceItem"><b>Internal Tagged Rows</b><span id="vInternalTagged">0</span><div class="note">Rows classified as internal use</div></div><div class="sourceItem"><b>Combined Rows</b><span id="vCombinedRows">0</span><div class="note">Total records available</div></div><div class="sourceItem"><b>Active Facility / Setup</b><span id="vFacility">TM</span><div class="note" id="vDataStatus">Default setup active</div></div><div class="sourceItem"><b>Current Reservation Type</b><span id="vUtilSource" style="font-size:17px">Combined</span><div class="note">Controls report calculations</div></div><div class="sourceItem"><b>Dashboard Version</b><span style="font-size:17px">2.0</span><div class="note">Production release</div></div><div class="sourceItem"><b>Capacity Method</b><span style="font-size:17px">Adjusted</span><div class="note">Parent/child rules active</div></div></div></details></div>
- <div class="footer">v2.0 rules: dual CSV upload; facility setup wizard with import/export; local date parsing; multi-select space dropdown; editable daily hours; parent/child capacity rules; Customer = Internal Booking is reported separately from MSS customer revenue. Executive KPIs show combined, customer, internal, customer/internal split, and weekday prime-time utilization. Reservation Type can be Customer Reservations, Internal Reservations, or Combined; Combined is the default. Heatmap colors: red = under 20%, yellow = 20–49%, light green = 50–74%, dark green = 75%+ for time utilization; value heatmaps use the same red-to-green convention based on relative value.</div>
+ <div class="card" style="margin-top:14px"><details class="dataSources"><summary>Data Sources &amp; Processing <button type="button" class="infoBtn" aria-label="Information about Data Sources and Processing" data-info-title="Data Sources & Processing" data-info="Audit information showing which files and facility configuration were used. These counts support troubleshooting and do not represent facility performance.">i</button></summary><div class="sourceGrid"><div class="sourceItem"><b>Customer Reservation Rows</b><span id="vMssRows">0</span><div class="note" id="mssSourceName">No customer file loaded</div></div><div class="sourceItem"><b>Internal Reservation Rows</b><span id="vInternalRows">0</span><div class="note" id="internalSourceName">No internal file loaded</div></div><div class="sourceItem"><b>Internal Tagged Rows</b><span id="vInternalTagged">0</span><div class="note">Rows classified as internal use</div></div><div class="sourceItem"><b>Combined Rows</b><span id="vCombinedRows">0</span><div class="note">Total records available</div></div><div class="sourceItem"><b>Active Facility / Setup</b><span id="vFacility">TM</span><div class="note" id="vDataStatus">Default setup active</div></div><div class="sourceItem"><b>Current Reservation Type</b><span id="vUtilSource" style="font-size:17px">Combined</span><div class="note">Controls report calculations</div></div><div class="sourceItem"><b>Dashboard Version</b><span style="font-size:17px">2.2</span><div class="note">Production release</div></div><div class="sourceItem"><b>Capacity Method</b><span style="font-size:17px">Adjusted</span><div class="note">Parent/child rules active</div></div></div></details></div>
+ <footer class="productFooter">
+  <div><strong>MSS Facility Utilization Dashboard v2.2</strong></div>
+  <div>Configured for: <strong id="footerFacilityName">TM Fieldhouse</strong></div>
+  <div>© 2026 My Sport Space • www.mysportspace.com</div>
+  <div class="confidential">Confidential – Intended for authorized facility personnel.</div>
+</footer>
 </div>
-<div class="infoPopover" id="infoPopover" role="dialog" aria-modal="false" aria-labelledby="infoPopoverTitle"><button type="button" class="infoClose" id="infoClose" aria-label="Close information">×</button><div class="infoPopoverTitle" id="infoPopoverTitle"></div><div class="infoPopoverText" id="infoPopoverText"></div></div>
 <div class="modal" id="modal"><div class="modalBox"><h2>Facility Setup Wizard<button type="button" class="infoBtn" aria-label="Information about Facility Setup Wizard" data-info-title="Facility Setup Wizard" data-info="Create or update a facility profile containing operating hours and physical parent/child space relationships.">i</button></h2><p class="note">Use this screen to set up each facility without editing JSON. Enter daily operating hours and parent/child space relationships, then save the setup file and send it to the facility. The dashboard still saves/loads a small JSON profile behind the scenes, but users do not need to edit it.</p>
  <h3>Facility and Daily Operating Hours<button type="button" class="infoBtn" aria-label="Information about Facility and Daily Operating Hours" data-info-title="Facility and Daily Operating Hours" data-info="Defines the facility name and the hours that each day contributes to available capacity.">i</button></h3>
  <div class="grid three">
@@ -196,12 +213,13 @@ function loadTmDefaultRelationships(){
 function updateFacilityDisplay(sourceLabel){
   const name=(CONFIG.facilityName||'Facility').trim();
   const vf=document.getElementById('vFacility'); if(vf) vf.textContent=name.length>14?name.slice(0,14)+'…':name;
+  const footerName=document.getElementById('footerFacilityName'); if(footerName) footerName.textContent=name;
   const status = sourceLabel || ('Active setup: '+name);
   const ss=document.getElementById('setupFileStatus'); if(ss && !ss.dataset.loaded) ss.textContent=status;
   const vd=document.getElementById('vDataStatus'); if(vd) vd.textContent=status;
 }
 function currentSetupPayload(){
-  return {version:'1.10', facilityName:CONFIG.facilityName || 'Facility', hours:CONFIG.hours, families:CONFIG.families};
+  return {version:'2.2', facilityName:CONFIG.facilityName || 'Facility', hours:CONFIG.hours, families:CONFIG.families};
 }
 function saveSetupToBrowser(){
   try{
@@ -265,7 +283,7 @@ function readSetupFile(){
 }
 function exportFacilitySetup(){
   const payload={
-    version:'1.10',
+    version:'2.2',
     facilityName:CONFIG.facilityName || 'Facility',
     hours:CONFIG.hours,
     families:CONFIG.families
