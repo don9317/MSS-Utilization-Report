@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MSS Facility Utilization Dashboard v2.2.2</title>
+<title>MSS Facility Utilization Dashboard v2.2.3</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#14213d;--muted:#667085;--line:#d9e1ec;--accent:#174ea6;--good:#e8f5e9;--warn:#fff8e1;--bad:#ffebee}
 *{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
@@ -84,7 +84,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
  <div class="card" style="margin-top:14px"><h3>Reservation Detail<button type="button" class="infoBtn" aria-label="Information about Reservation Detail" data-info-title="Reservation Detail" data-info="Up to 500 matching reservation records used in the current report, including source, space, sport, value, and status.">i</button></h3><div class="scroll"><table id="detailTbl"></table></div></div>
 
  <div class="card" style="margin-top:14px"><details class="dataSources"><summary>Data Sources &amp; Processing <button type="button" class="infoBtn" aria-label="Information about Data Sources and Processing" data-info-title="Data Sources & Processing" data-info="Audit information showing which files and facility configuration were used. These counts support troubleshooting and do not represent facility performance.">i</button></summary><div class="sourceGrid"><div class="sourceItem"><b>Customer Reservation Rows</b><span id="vMssRows">0</span><div class="note" id="mssSourceName">No customer file loaded</div></div><div class="sourceItem"><b>Internal Reservation Rows</b><span id="vInternalRows">0</span><div class="note" id="internalSourceName">No internal file loaded</div></div><div class="sourceItem"><b>Internal Tagged Rows</b><span id="vInternalTagged">0</span><div class="note">Rows classified as internal use</div></div><div class="sourceItem"><b>Combined Rows</b><span id="vCombinedRows">0</span><div class="note">Total records available</div></div><div class="sourceItem"><b>Active Facility / Setup</b><span id="vFacility">TM</span><div class="note" id="vDataStatus">Default setup active</div></div><div class="sourceItem"><b>Current Reservation Type</b><span id="vUtilSource" style="font-size:17px">Combined</span><div class="note">Controls report calculations</div></div><div class="sourceItem"><b>Dashboard Version</b><span style="font-size:17px">2.2.2</span><div class="note">Clean production release</div></div><div class="sourceItem"><b>Capacity Method</b><span style="font-size:17px">Adjusted</span><div class="note">Parent/child rules active</div></div></div></details></div>
- <footer class="productFooter"><div><strong>MSS Facility Utilization Dashboard v2.2.2</strong></div><div>Configured for: <strong id="footerFacilityName">TM Fieldhouse</strong></div><div>© 2026 My Sport Space • www.mysportspace.com</div><div class="confidential">Confidential – Intended for authorized facility personnel.</div></footer></div><div class="modal" id="modal"><div class="modalBox"><h2>Facility Setup Wizard<button type="button" class="infoBtn" aria-label="Information about Facility Setup Wizard" data-info-title="Facility Setup Wizard" data-info="Create or update a facility profile containing operating hours and physical parent/child space relationships.">i</button></h2><p class="note">Use this screen to set up each facility without editing JSON. Enter daily operating hours and parent/child space relationships, then save the setup file and send it to the facility. The dashboard still saves/loads a small JSON profile behind the scenes, but users do not need to edit it.</p>
+ <footer class="productFooter"><div><strong>MSS Facility Utilization Dashboard v2.2.3</strong></div><div>Configured for: <strong id="footerFacilityName">TM Fieldhouse</strong></div><div>© 2026 My Sport Space • www.mysportspace.com</div><div class="confidential">Confidential – Intended for authorized facility personnel.</div></footer></div><div class="infoPopover" id="infoPopover" role="dialog" aria-modal="false" aria-labelledby="infoPopoverTitle">
+  <button type="button" class="infoClose" id="infoClose" aria-label="Close information">×</button>
+  <div class="infoPopoverTitle" id="infoPopoverTitle">Information</div>
+  <div class="infoPopoverText" id="infoPopoverText"></div>
+</div>
+<div class="modal" id="modal"><div class="modalBox"><h2>Facility Setup Wizard<button type="button" class="infoBtn" aria-label="Information about Facility Setup Wizard" data-info-title="Facility Setup Wizard" data-info="Create or update a facility profile containing operating hours and physical parent/child space relationships.">i</button></h2><p class="note">Use this screen to set up each facility without editing JSON. Enter daily operating hours and parent/child space relationships, then save the setup file and send it to the facility. The dashboard still saves/loads a small JSON profile behind the scenes, but users do not need to edit it.</p>
  <h3>Facility and Daily Operating Hours<button type="button" class="infoBtn" aria-label="Information about Facility and Daily Operating Hours" data-info-title="Facility and Daily Operating Hours" data-info="Defines the facility name and the hours that each day contributes to available capacity.">i</button></h3>
  <div class="grid three">
   <div><label>Facility Name</label><input id="facilityName" value="TM Fieldhouse"></div><div></div><div></div>
@@ -608,8 +613,9 @@ function renderInsights(c){let util=pct(c.totalBook,c.totalCap); let totalVal=c.
 const infoPopover=document.getElementById('infoPopover');
 const infoPopoverTitle=document.getElementById('infoPopoverTitle');
 const infoPopoverText=document.getElementById('infoPopoverText');
-function closeInfoPopover(){infoPopover.classList.remove('show');}
+function closeInfoPopover(){if(infoPopover)infoPopover.classList.remove('show');}
 function showInfoPopover(btn){
+  if(!infoPopover||!btn)return;
   infoPopoverTitle.textContent=btn.dataset.infoTitle||'Information';
   infoPopoverText.textContent=btn.dataset.info||'';
   infoPopover.classList.add('show');
@@ -623,9 +629,9 @@ function showInfoPopover(btn){
 document.addEventListener('click',e=>{
   const btn=e.target.closest('.infoBtn');
   if(btn){e.preventDefault();e.stopPropagation();showInfoPopover(btn);return;}
-  if(!infoPopover.contains(e.target)) closeInfoPopover();
+  if(infoPopover&&!infoPopover.contains(e.target)) closeInfoPopover();
 });
-document.getElementById('infoClose').onclick=closeInfoPopover;
+const infoClose=document.getElementById('infoClose'); if(infoClose)infoClose.onclick=closeInfoPopover;
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeInfoPopover();});
 window.addEventListener('resize',closeInfoPopover);
 window.addEventListener('scroll',closeInfoPopover,true);
