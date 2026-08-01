@@ -1,3 +1,3 @@
-# MSS Facility Utilization Dashboard v2.2.1
+# MSS Facility Utilization Dashboard v2.2.2
 
-Clean production release built from the stable v2.1.2 application. No upload, Analyze, filter, space-selector, capacity, or calculation logic was changed.
+Upload-control reliability release. File inputs and Analyze Utilization use direct HTML event handlers so they do not depend on the dashboard completing all startup code.
